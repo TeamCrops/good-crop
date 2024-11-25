@@ -25,4 +25,11 @@ public class Member extends Timestamped {
     private String password;
     private String nickname;
     private LocalDate birth;
+
+    public void modify(String password, String nickname, LocalDate birth){
+        this.password = password;
+        this.nickname = nickname;
+        this.birth = birth;
+    }
+
 }
