@@ -1,11 +1,18 @@
 package com.crop.goodcrop.exception;
 
+import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Getter
+/**
+ * API응답 상태에 대한 정보를 제공하는 DTO 클래스
+ *
+ * @author 김현정
+ * @since 2024-10-03
+ */
+@Data
 public class ErrorResponseDto {
     private String date;
     private int state;
