@@ -9,6 +9,7 @@ import com.crop.goodcrop.domain.member.repository.MemberRepository;
 import com.crop.goodcrop.exception.ErrorCode;
 import com.crop.goodcrop.exception.ResponseException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public MemberResponseDto receiveUserInfo(MemberRequestDto requestDto) {
         Member member = memberRepository.findById(requestDto.getId())
@@ -30,7 +32,7 @@ public class MemberService {
         Member member = memberRepository.findById(requestDto.getId())
                 .orElseThrow(()-> new ResponseException(ErrorCode.USER_NOT_FOUND));
 
-        member.modify(requestDto.getPassword(), requestDto.getPassword(), requestDto.getBirth());
+        member.modify(passwordEncoder.encode(requestDto.getPassword()), requestDto.getNickname(), requestDto.getBirth());
         return new MemberUpdateResponseDto(member);
     }
 }
