@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -72,5 +73,42 @@ class ReviewServiceTest {
         assertThat(savedReview).isNotNull();
         assertThat(savedReview.getMember()).isEqualTo(member);
         assertThat(savedReview.getProduct()).isEqualTo(product);
+    }
+
+    @Test
+    @DisplayName("리뷰 조회 - 성공")
+    void retrieveReview_Success() {
+        // Given
+        Member member = entityManager.persistAndFlush(
+                Member.builder()
+                        .email("sparta@email.com")
+                        .password("password1234!")
+                        .build());
+
+        Product product = entityManager.persistAndFlush(
+                Product.builder()
+                        .name("크리스마스 한정판 귤")
+                        .price(333333)
+                        .build());
+
+        for (int i = 1; i <= 15; i++) {
+            entityManager.persistAndFlush(
+                    Review.builder()
+                            .member(member)
+                            .product(product)
+                            .comment("Review " + i)
+                            .score(5)
+                            .build());
+        }
+
+        // When
+        Page<ReviewResponseDto> responses = reviewService.retrieveReviews(product.getId(), 1);
+
+        // Then
+
+        assertThat(responses).isNotNull();
+        assertThat(responses.getContent().size()).isEqualTo(10); // 페이지 크기 확인
+        assertThat(responses.getTotalElements()).isEqualTo(15); // 전체 리뷰 개수 확인
+        assertThat(responses.getContent().get(0).getComment()).isEqualTo("Review 15"); // 가장 최근 리뷰 확인
     }
 }
