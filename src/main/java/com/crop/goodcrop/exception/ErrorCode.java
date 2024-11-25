@@ -22,6 +22,7 @@ public enum ErrorCode {
     MISSING_BEARER_TOKEN("A004", "Bearer 인증 정보가 올바르지 않습니다", HttpStatus.UNAUTHORIZED),
     EMAIL_ALREADY_EXISTS("A005", "이미 사용 중인 이메일입니다", HttpStatus.CONFLICT),
     TOKEN_MISSING("A006", "Authorization 헤더가 누락되었습니다", HttpStatus.UNAUTHORIZED),
+    INVALID_TOKEN_PARSING("A007", "JWT 토큰 파싱 중 오류가 발생했습니다", HttpStatus.BAD_REQUEST),
 
     // Server(S)
     INTERNAL_SERVER_ERROR("S000","서버 내부 오류", HttpStatus.INTERNAL_SERVER_ERROR),
