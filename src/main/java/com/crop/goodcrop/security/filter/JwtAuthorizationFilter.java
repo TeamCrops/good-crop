@@ -42,13 +42,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String url = httpRequest.getRequestURI();
-
+        String method = httpRequest.getMethod();
         // 허용된 URL
-        if (url.startsWith("/api/auth") ||
-                url.startsWith("/api/products") ||
-                url.startsWith("/api/v1/products") ||
-                url.matches("/api/products/\\d+/reviews")) {
-
+        if (url.startsWith("/api/auth") || //회원가입,로그인
+                (url.matches("/api/products/\\d+") && "GET".equals(method)) || //단일 상품 조회
+                url.startsWith("/api/v1/products") || //상품검색
+                (url.matches("/api/products/\\d+/reviews") && "GET".equals(method))//리뷰보기
+        ) {
             chain.doFilter(request, response);
             return;
         }
@@ -116,7 +116,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private Authentication createAuthentication(String email) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         log.info("객체생성" + userDetails);
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, null);
     }
 
     public void sendErrorResponse(HttpServletResponse response, ErrorCode errorCode, HttpServletRequest request) throws IOException {
