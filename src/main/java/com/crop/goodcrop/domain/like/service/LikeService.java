@@ -31,13 +31,13 @@ public class LikeService {
         likeRepository.save(like);
     }
 
-//    public void removeLike(LikeRequestDto requestDto, Long productId) {
-//        // TODO. khj 시큐리티 완성되면 거기서 뽑아낼 것.
-//        Member member = Member.builder().id(1L).build();
-//        Like like = likeRepository.findByProductIdAndMemberId(requestDto.getMemberId(), productId);
-//        if (like == null)
-//            throw new ResponseException(ErrorCode.LIKE_NOT_FOUND);
-//
-//        likeRepository.delete(like);
-//    }
+    public void deleteLike(LikeRequestDto requestDto, Long productId) {
+        // TODO. khj 시큐리티 완성되면 거기서 뽑아낼 것.
+        Member member = Member.builder().id(1L).build();
+        Like like = likeRepository.findByProductIdAndMemberId(requestDto.getMemberId(), productId);
+        if (like == null)
+            throw new ResponseException(ErrorCode.LIKE_NOT_FOUND);
+
+        likeRepository.delete(like);
+    }
 }

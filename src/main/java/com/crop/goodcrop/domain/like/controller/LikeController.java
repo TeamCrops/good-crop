@@ -23,12 +23,12 @@ public class LikeController {
                 .build();
     }
 
-//    @DeleteMapping("/{productId}")
-//    public ResponseEntity<Void> removeLike(
-//            @PathVariable Long productId,
-//            @RequestBody LikeRequestDto requestDto
-//    ) {
-//        likeService.removeLike(requestDto, productId);
-//        return ResponseEntity.noContent().build();
-//    }
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> deleteLike(
+            @PathVariable Long productId,
+            @RequestBody LikeRequestDto requestDto
+    ) {
+        likeService.deleteLike(requestDto, productId);
+        return ResponseEntity.noContent().build();
+    }
 }
