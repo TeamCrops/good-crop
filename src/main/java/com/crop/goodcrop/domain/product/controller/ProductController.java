@@ -5,6 +5,7 @@ import com.crop.goodcrop.domain.product.dto.response.ProductResponseDto;
 import com.crop.goodcrop.domain.product.entity.Product;
 import com.crop.goodcrop.domain.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,8 @@ public class ProductController {
 
     @GetMapping("/products/{productId}")
     public ResponseEntity<ProductResponseDto> retrieveProduct(@PathVariable Long productId) {
-        return ResponseEntity.ok(productService.retrieveProduct(productId));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(productService.retrieveProduct(productId));
     }
 }
