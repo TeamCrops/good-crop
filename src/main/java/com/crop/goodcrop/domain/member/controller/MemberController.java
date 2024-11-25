@@ -1,15 +1,15 @@
 package com.crop.goodcrop.domain.member.controller;
 
 import com.crop.goodcrop.domain.member.dto.request.MemberRequestDto;
+import com.crop.goodcrop.domain.member.dto.request.MemberUpdateRequestDto;
 import com.crop.goodcrop.domain.member.dto.response.MemberResponseDto;
+import com.crop.goodcrop.domain.member.dto.response.MemberUpdateResponseDto;
 import com.crop.goodcrop.domain.member.service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +21,14 @@ public class MemberController {
     @GetMapping("/user/profile")
     public ResponseEntity<MemberResponseDto> profile(@RequestBody MemberRequestDto requestDto) {
         MemberResponseDto respDto = memberService.receiveUserInfo(requestDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(respDto);
+    }
+
+    @PutMapping("/user/profile")
+    public ResponseEntity<MemberUpdateResponseDto> updateProfile(@Valid @RequestBody MemberUpdateRequestDto requestDto){
+        MemberUpdateResponseDto respDto = memberService.modifyUserInfo(requestDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(respDto);
