@@ -48,6 +48,9 @@ dependencies {
 
     // Random string
     testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+
+    // H2 데이터베이스
+    runtimeOnly 'com.h2database:h2'
 }
 
 tasks.named('test') {
