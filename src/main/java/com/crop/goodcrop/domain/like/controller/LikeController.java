@@ -14,13 +14,13 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping("/{productId}")
-    public ResponseEntity<Void> retrieveLike(
+    public ResponseEntity<Void> createLike(
             @PathVariable Long productId,
             @RequestBody LikeRequestDto requestDto) {
-        likeService.retrieveLike(requestDto, productId);
+        likeService.createLike(requestDto, productId);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(null);
+                .build();
     }
 
 //    @DeleteMapping("/{productId}")
