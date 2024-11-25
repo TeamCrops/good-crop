@@ -29,10 +29,9 @@ public class UserDetailsImpl implements UserDetails {
         return member.getEmail();
     }
 
-    // 사용자의 권한을 GrantedAuthority 로 추상화 및 반환
+    // 사용자가 권한이 없으므로 빈 리스트 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 유저의 권한이 없는 경우 빈 리스트 반환
         return Collections.emptyList();
     }
 
