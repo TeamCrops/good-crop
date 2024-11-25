@@ -1,13 +1,16 @@
 package com.crop.goodcrop.domain.member.service;
 
 import com.crop.goodcrop.domain.member.dto.request.MemberRequestDto;
+import com.crop.goodcrop.domain.member.dto.request.MemberUpdateRequestDto;
 import com.crop.goodcrop.domain.member.dto.response.MemberResponseDto;
+import com.crop.goodcrop.domain.member.dto.response.MemberUpdateResponseDto;
 import com.crop.goodcrop.domain.member.entity.Member;
 import com.crop.goodcrop.domain.member.repository.MemberRepository;
 import com.crop.goodcrop.exception.ErrorCode;
 import com.crop.goodcrop.exception.ResponseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,5 +23,14 @@ public class MemberService {
                 .orElseThrow(()-> new ResponseException(ErrorCode.USER_NOT_FOUND));
 
         return new MemberResponseDto(member);
+    }
+
+    @Transactional
+    public MemberUpdateResponseDto modifyUserInfo(MemberUpdateRequestDto requestDto) {
+        Member member = memberRepository.findById(requestDto.getId())
+                .orElseThrow(()-> new ResponseException(ErrorCode.USER_NOT_FOUND));
+
+        member.modify(requestDto.getPassword(), requestDto.getPassword(), requestDto.getBirth());
+        return new MemberUpdateResponseDto(member);
     }
 }
