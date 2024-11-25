@@ -7,6 +7,7 @@ import com.crop.goodcrop.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -55,10 +56,14 @@ public class WebSecurityConfig {
                 )
                 //요청 접근 허가
                 .authorizeHttpRequests(auth ->
+                        // 회원가입,로그인
                         auth.requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers("/api/products/**").permitAll()
+                                // 단일 상품 조회
+                                .requestMatchers("/api/products/{productId}").permitAll()
+                                // 상품검색
                                 .requestMatchers("/api/v1/products").permitAll()
-                                .requestMatchers("/api/products/{productId}/reviews").permitAll()
+                                // 리뷰보기
+                                .requestMatchers(HttpMethod.GET, "/api/products/{productId}/reviews").permitAll()
                                 .anyRequest().authenticated() //그 외 모든 요청 인증처리
                 );
 
