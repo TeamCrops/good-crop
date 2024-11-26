@@ -1,11 +1,13 @@
 package com.crop.goodcrop.review;
 
+import com.crop.goodcrop.config.QueryDslConfig;
 import com.crop.goodcrop.domain.common.dto.PageResponseDto;
 import com.crop.goodcrop.domain.member.entity.Member;
 import com.crop.goodcrop.domain.member.repository.MemberRepository;
 import com.crop.goodcrop.domain.product.entity.Product;
 import com.crop.goodcrop.domain.product.repository.ProductRepository;
-import com.crop.goodcrop.domain.review.dto.request.ReviewRequestDto;
+import com.crop.goodcrop.domain.review.dto.request.ReviewCreateRequestDto;
+import com.crop.goodcrop.domain.review.dto.request.ReviewModifyRequestDto;
 import com.crop.goodcrop.domain.review.dto.response.ReviewResponseDto;
 import com.crop.goodcrop.domain.review.entity.Review;
 import com.crop.goodcrop.domain.review.repository.ReviewRepository;
@@ -16,9 +18,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@Import(QueryDslConfig.class)
 @DataJpaTest
 class ReviewServiceTest {
 
@@ -55,7 +59,7 @@ class ReviewServiceTest {
                 .price(333333)
                 .build());
 
-        ReviewRequestDto requestDto = ReviewRequestDto.builder()
+        ReviewCreateRequestDto requestDto = ReviewCreateRequestDto.builder()
                 .score(5)
                 .comment("꿀맛!!")
                 .build();
@@ -110,5 +114,46 @@ class ReviewServiceTest {
         assertThat(responses.getTotalPage()).isEqualTo(2); // 총 페이지 개수 확인
         assertThat(responses.getData().get(0).getComment()).isEqualTo("Review 15"); // 첫 번째 리뷰 내용 확인
         assertThat(responses.getData().get(9).getComment()).isEqualTo("Review 6"); // 마지막 리뷰 내용 확인
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 - 성공")
+    void modifyReview_Success() {
+        // Given
+        Member member = entityManager.persistAndFlush(
+                Member.builder()
+                        .email("sparta@email.com")
+                        .password("password1234!")
+                        .build());
+
+        Product product = entityManager.persistAndFlush(
+                Product.builder()
+                        .name("크리스마스 한정판 귤")
+                        .price(333333)
+                        .build());
+
+        Review review = entityManager.persistAndFlush(
+                Review.builder()
+                        .comment("꿀맛!!!")
+                        .score(5)
+                        .member(member)
+                        .product(product)
+                        .build());
+
+        ReviewModifyRequestDto requestDto = ReviewModifyRequestDto.builder()
+                .score(1)
+                .comment("먹고 나서 배탈났어요...")
+                .build();
+
+        // When
+        ReviewResponseDto responseDto
+                = reviewService.modifyReview(member.getId(), product.getId(), review.getId(), requestDto);
+
+        // Then
+        assertThat(responseDto).isNotNull();
+        assertThat(responseDto.getComment()).isEqualTo("먹고 나서 배탈났어요...");
+        assertThat(responseDto.getScore()).isEqualTo(1);
+        assertThat(responseDto.getNickname()).isEqualTo(member.getNickname());
+
     }
 }
