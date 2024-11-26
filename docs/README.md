@@ -1,8 +1,8 @@
 ### 🖥️와이어 프레임
-
+<img src="images/WireFrame.png"/>
 
 ### 📋ERD
-<img src="images/erd.png"/>
+<img src="images/ERD.png"/>
 
 ### 📑API 명세서
 <details><summary><b>API 명세서(펼치기/접기)</b></summary>
@@ -312,4 +312,62 @@
         </td> 
     </tr>          
 </table>
+</details>
+
+### 🗂️프로젝트 구조
+<details><summary>프로젝트 구조(펼치기/접기)</summary>
+
+```bash
+'src.main.java.com.crop.goodcrop'           # goodCrop 프로젝트 관련 패키지와 소스 코드를 모아놓은 폴더                            
+ ├── 'config'                               # 프로젝트 설정 관련 class들을 모아놓은 폴더
+ ├── 'domain'                               # 도메인 모델을 정의하는 class들을 모아놓은 폴더
+ │    ├── 'auth'                            # 로그인 & 회원가입 관련 폴더와 class들을 모아놓은 폴더                              
+ │    │   ├── 'controller'                     
+ │    │   ├── 'dto'                     
+ │    │   │   └── 'request'                     
+ │    │   ├── 'exception'                     
+ │    │   └── 'service'      
+ │    ├── 'common'                          # 공통으로 사용되는 class들을 모아놓은 폴더        
+ │    │   ├── 'dto'                  
+ │    │   └── 'entity'                            
+ │    ├── 'like'                            # 좋아요 관련 폴더와 class들을 모아놓은 폴더                                 
+ │    │   ├── 'controller'           
+ │    │   ├── 'dto'     
+ │    │   │   ├── 'request'  
+ │    │   │   └── 'response'                
+ │    │   ├── 'entity'               
+ │    │   ├── 'repository'           
+ │    │   └── 'service'              
+ │    ├── 'member'                          # 멤머 담당자 관련 class들을 모아놓은 폴더              
+ │    │   ├── 'controller'           
+ │    │   ├── 'dto'  
+ │    │   │   ├── 'request'  
+ │    │   │   └── 'response'                 
+ │    │   ├── 'entity'               
+ │    │   ├── 'repository'           
+ │    │   └── 'service'              
+ │    ├── 'product'                         # 상품 관련 class들을 모아놓은 폴더                    
+ │    │   ├── 'controller'           
+ │    │   ├── 'dto'      
+ │    │   │   ├── 'request'  
+ │    │   │   └── 'response'             
+ │    │   ├── 'entity'               
+ │    │   ├── 'repository'           
+ │    │   └── 'service'              
+ │    └── 'review'                          # 리뷰 관련 class들을 모아놓은 폴더                  
+ │        ├── 'controller'           
+ │        ├── 'dto'   
+ │        │   ├── 'request'  
+ │        │   └── 'response'                
+ │        ├── 'entity'               
+ │        ├── 'repository'           
+ │        └── 'service'                      
+ ├── 'exception'                            # 예외 처리 관련 class들을 모아놓은 폴더
+ └── 'security'                             # security관련 class들을 모아놓은 폴더
+     ├── 'config'                           # security와 password설정 관련 class들을 모아놓은 폴더
+     ├── 'entity'                           # UserDetailsImpl
+     ├── 'filter'                           # 인증/인가 필터
+     ├── 'service'                          # UserDetailsServiceImpl
+     └── 'util'                             # JWT 토큰 생성 및 검증을 수행하는 class가 있는 폴더
+```
 </details>
