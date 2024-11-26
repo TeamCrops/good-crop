@@ -1,10 +1,12 @@
 package com.crop.goodcrop.domain.review.controller;
 
 import com.crop.goodcrop.domain.common.dto.PageResponseDto;
-import com.crop.goodcrop.domain.review.dto.request.ReviewRequestDto;
+import com.crop.goodcrop.domain.review.dto.request.ReviewCreateRequestDto;
+import com.crop.goodcrop.domain.review.dto.request.ReviewModifyRequestDto;
 import com.crop.goodcrop.domain.review.dto.response.ReviewResponseDto;
 import com.crop.goodcrop.domain.review.entity.Review;
 import com.crop.goodcrop.domain.review.service.ReviewService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +21,12 @@ public class ReviewController {
 
     @PostMapping("")
     public ResponseEntity<ReviewResponseDto> writeReview(
+            // TODO
+            //  - Security 적용
 //            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam Long memberId,
             @PathVariable Long productId,
-            @RequestBody ReviewRequestDto reviewRequestDto
+            @Valid @RequestBody ReviewCreateRequestDto reviewRequestDto
     ) {
 //        Long memberId = userDetails.getMember().getId();
         ReviewResponseDto reviewResponseDto = reviewService.createReview(memberId, productId, reviewRequestDto);
@@ -40,5 +44,22 @@ public class ReviewController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(responses);
+    }
+
+    @PutMapping("/{reviewId}")
+    public ResponseEntity<ReviewResponseDto> updateReview(
+            // TODO
+            //  - Security 적용
+//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam Long memberId,
+            @PathVariable Long productId,
+            @PathVariable Long reviewId,
+            @Valid @RequestBody ReviewModifyRequestDto reviewRequestDto
+    ) {
+//        Long memberId = userDetails.getMember().getId();
+        ReviewResponseDto reviewResponseDto = reviewService.modifyReview(memberId, productId, reviewId, reviewRequestDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(reviewResponseDto);
     }
 }
