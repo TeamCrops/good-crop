@@ -1,5 +1,6 @@
 package com.crop.goodcrop.domain.review.service;
 
+import com.crop.goodcrop.domain.common.dto.PageResponseDto;
 import com.crop.goodcrop.domain.member.entity.Member;
 import com.crop.goodcrop.domain.member.repository.MemberRepository;
 import com.crop.goodcrop.domain.product.entity.Product;
@@ -10,6 +11,10 @@ import com.crop.goodcrop.domain.review.entity.Review;
 import com.crop.goodcrop.domain.review.repository.ReviewRepository;
 import com.crop.goodcrop.exception.ResponseException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import static com.crop.goodcrop.exception.ErrorCode.PRODUCT_NOT_FOUND;
@@ -35,5 +40,16 @@ public class ReviewService {
         Review review = reviewRepository.save(Review.of(reviewRequestDto.getComment(), reviewRequestDto.getScore(), member, product));
 
         return ReviewResponseDto.from(review);
+    }
+
+    public PageResponseDto<Review> retrieveReviews(Long productId, int page) {
+        // DB에 존재하는 상품인지 확인
+        productRepository.findById(productId)
+                .orElseThrow(() -> new ResponseException(PRODUCT_NOT_FOUND));
+
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.DESC, "createdAt");
+
+        Page<Review> reviews = reviewRepository.findByProductId(productId, pageable);
+        return PageResponseDto.of(reviews.toList(), pageable, reviews.getTotalPages());
     }
 }
