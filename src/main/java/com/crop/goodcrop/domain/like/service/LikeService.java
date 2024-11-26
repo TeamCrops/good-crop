@@ -8,6 +8,7 @@ import com.crop.goodcrop.domain.product.entity.Product;
 import com.crop.goodcrop.domain.product.repository.ProductRepository;
 import com.crop.goodcrop.exception.ErrorCode;
 import com.crop.goodcrop.exception.ResponseException;
+import com.crop.goodcrop.security.entity.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +18,9 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final ProductRepository productRepository;
 
-    public void createLike(LikeRequestDto requestDto, Long productId) {
-        // TODO. khj 시큐리티 완성되면 거기서 뽑아낼 것.
-        Member member = Member.builder().id(1L).build();
-        Like like = likeRepository.findByProductIdAndMemberId(requestDto.getMemberId(), productId);
+    public void createLike(UserDetailsImpl userDetail, LikeRequestDto requestDto, Long productId) {
+        Member member = userDetail.getUser();
+        Like like = likeRepository.findByProductIdAndMemberId(member.getId(), productId);
         if (like != null)
             throw new ResponseException(ErrorCode.LIKE_DUPLICATE);
 
@@ -31,10 +31,9 @@ public class LikeService {
         likeRepository.save(like);
     }
 
-    public void deleteLike(LikeRequestDto requestDto, Long productId) {
-        // TODO. khj 시큐리티 완성되면 거기서 뽑아낼 것.
-        Member member = Member.builder().id(1L).build();
-        Like like = likeRepository.findByProductIdAndMemberId(requestDto.getMemberId(), productId);
+    public void deleteLike(UserDetailsImpl userDetail, LikeRequestDto requestDto, Long productId) {
+        Member member = userDetail.getUser();
+        Like like = likeRepository.findByProductIdAndMemberId(member.getId(), productId);
         if (like == null)
             throw new ResponseException(ErrorCode.LIKE_NOT_FOUND);
 

@@ -3,6 +3,7 @@ package com.crop.goodcrop.like;
 import com.crop.goodcrop.domain.like.controller.LikeController;
 import com.crop.goodcrop.domain.like.dto.request.LikeRequestDto;
 import com.crop.goodcrop.domain.like.service.LikeService;
+import com.crop.goodcrop.security.entity.UserDetailsImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ public class LikeControllerTest {
         Long productId = 1L;
         LikeRequestDto requestDto = new LikeRequestDto(memberId);
 
-        doNothing().when(likeService).createLike(any(LikeRequestDto.class), anyLong());
+        doNothing().when(likeService).createLike(any(UserDetailsImpl.class), any(LikeRequestDto.class), anyLong());
 
         // when & then
         mockMvc.perform(post("/api/likes/{productId}", productId)
@@ -61,7 +62,7 @@ public class LikeControllerTest {
         Long productId = 1L;
         LikeRequestDto requestDto = new LikeRequestDto(memberId);
 
-        doNothing().when(likeService).deleteLike(any(LikeRequestDto.class), anyLong());
+        doNothing().when(likeService).deleteLike(any(UserDetailsImpl.class), any(LikeRequestDto.class), anyLong());
 
         // when & then
         mockMvc.perform(delete("/api/likes/{productId}", productId)

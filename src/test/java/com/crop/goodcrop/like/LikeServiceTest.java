@@ -4,10 +4,12 @@ import com.crop.goodcrop.domain.like.dto.request.LikeRequestDto;
 import com.crop.goodcrop.domain.like.entity.Like;
 import com.crop.goodcrop.domain.like.repository.LikeRepository;
 import com.crop.goodcrop.domain.like.service.LikeService;
+import com.crop.goodcrop.domain.member.entity.Member;
 import com.crop.goodcrop.domain.product.entity.Product;
 import com.crop.goodcrop.domain.product.repository.ProductRepository;
 import com.crop.goodcrop.exception.ErrorCode;
 import com.crop.goodcrop.exception.ResponseException;
+import com.crop.goodcrop.security.entity.UserDetailsImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +37,7 @@ public class LikeServiceTest {
         // given
         Long memberId = 1L;
         Long productId = 1L;
+        UserDetailsImpl memberDetails = new UserDetailsImpl(Member.builder().id(memberId).build());
         LikeRequestDto requestDto = new LikeRequestDto(memberId);
 
         when(likeRepository.findByProductIdAndMemberId(memberId, productId)).thenReturn(null);
@@ -43,7 +46,7 @@ public class LikeServiceTest {
 
         // when
         LikeService service = new LikeService(likeRepository, productRepository);
-        service.createLike(requestDto, productId);
+        service.createLike(memberDetails, requestDto, productId);
 
         // then
         verify(likeRepository, times(1)).findByProductIdAndMemberId(memberId, productId);
@@ -57,13 +60,15 @@ public class LikeServiceTest {
         // given
         Long memberId = 1L;
         Long productId = 1L;
+        UserDetailsImpl memberDetails = new UserDetailsImpl(Member.builder().id(memberId).build());
         LikeRequestDto requestDto = new LikeRequestDto(memberId);
 
         when(likeRepository.findByProductIdAndMemberId(memberId, productId)).thenReturn(new Like());
 
         // when
         LikeService likeService = new LikeService(likeRepository, productRepository);
-        ResponseException exception = assertThrows(ResponseException.class, () -> likeService.createLike(requestDto, productId));
+        ResponseException exception = assertThrows(ResponseException.class,
+                () -> likeService.createLike(memberDetails, requestDto, productId));
 
         // then
         verify(likeRepository, times(1)).findByProductIdAndMemberId(memberId, productId);
@@ -79,6 +84,7 @@ public class LikeServiceTest {
         // given
         Long memberId = 1L;
         Long productId = 1L;
+        UserDetailsImpl memberDetails = new UserDetailsImpl(Member.builder().id(memberId).build());
         LikeRequestDto requestDto = new LikeRequestDto(memberId);
 
         when(likeRepository.findByProductIdAndMemberId(memberId, productId)).thenReturn(null);
@@ -86,7 +92,8 @@ public class LikeServiceTest {
 
         // when
         LikeService likeService = new LikeService(likeRepository, productRepository);
-        ResponseException exception = assertThrows(ResponseException.class, () -> likeService.createLike(requestDto, productId));
+        ResponseException exception = assertThrows(ResponseException.class,
+                () -> likeService.createLike(memberDetails, requestDto, productId));
 
         // then
         verify(likeRepository, times(1)).findByProductIdAndMemberId(memberId, productId);
@@ -103,6 +110,7 @@ public class LikeServiceTest {
         // given
         Long memberId = 1L;
         Long productId = 1L;
+        UserDetailsImpl memberDetails = new UserDetailsImpl(Member.builder().id(memberId).build());
         LikeRequestDto requestDto = new LikeRequestDto(memberId);
         Like like = new Like();
 
@@ -110,7 +118,7 @@ public class LikeServiceTest {
 
         // when
         LikeService service = new LikeService(likeRepository, productRepository);
-        service.deleteLike(requestDto, productId);
+        service.deleteLike(memberDetails, requestDto, productId);
 
         // then
         verify(likeRepository, times(1)).findByProductIdAndMemberId(memberId, productId);
@@ -123,13 +131,15 @@ public class LikeServiceTest {
         // given
         Long memberId = 1L;
         Long productId = 1L;
+        UserDetailsImpl memberDetails = new UserDetailsImpl(Member.builder().id(memberId).build());
         LikeRequestDto requestDto = new LikeRequestDto(memberId);
 
         when(likeRepository.findByProductIdAndMemberId(memberId, productId)).thenReturn(null);
 
         // when
         LikeService likeService = new LikeService(likeRepository, productRepository);
-        ResponseException exception = assertThrows(ResponseException.class, () -> likeService.deleteLike(requestDto, productId));
+        ResponseException exception = assertThrows(ResponseException.class,
+                () -> likeService.deleteLike(memberDetails, requestDto, productId));
 
         // then
         verify(likeRepository, times(1)).findByProductIdAndMemberId(memberId, productId);
