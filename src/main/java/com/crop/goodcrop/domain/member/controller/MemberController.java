@@ -33,8 +33,8 @@ public class MemberController {
     }
 
     @PutMapping("/user/profile")
-    public ResponseEntity<MemberUpdateResponseDto> updateProfile(@Valid @RequestBody MemberUpdateRequestDto requestDto){
-        MemberUpdateResponseDto respDto = memberService.modifyUserInfo(requestDto);
+    public ResponseEntity<MemberUpdateResponseDto> updateProfile(@Valid @RequestBody MemberUpdateRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        MemberUpdateResponseDto respDto = memberService.modifyUserInfo(requestDto, userDetails);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(respDto);
