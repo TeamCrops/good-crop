@@ -14,10 +14,9 @@ import java.time.LocalDateTime;
 public class TopKeywordDto {
     private String keyword;
     private Long count;
-    private LocalDateTime lastedAt;
 
     @QueryProjection
-    public TopKeywordDto(String keyword, Long count, LocalDateTime lastedAt) {
+    public TopKeywordDto(String keyword, Long count) {
         this.keyword = keyword;
         this.count = count;
     }

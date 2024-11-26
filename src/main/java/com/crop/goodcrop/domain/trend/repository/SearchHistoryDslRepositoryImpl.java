@@ -4,7 +4,6 @@ import com.crop.goodcrop.domain.trend.dto.QTopKeywordDto;
 import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
 import com.crop.goodcrop.domain.trend.entity.QSearchHistory;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.DatePath;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -22,21 +21,17 @@ public class SearchHistoryDslRepositoryImpl implements SearchHistoryDslRepositor
     public List<TopKeywordDto> findTopFiveOrderBySearchCount() {
         LocalDateTime endDateTime = LocalDateTime.now();
         LocalDateTime startDateTime = endDateTime.minusHours(2); // 2시간
-
         NumberPath<Long> aliasSearchCount = Expressions.numberPath(Long.class, "search_count");
-        DatePath<LocalDateTime> aliasLastedAt = Expressions.datePath(LocalDateTime.class, "lasted_at");
-
         return queryFactory
                 .select(new QTopKeywordDto(
                         searchHistory.keyword,
-                        searchHistory.count().as(aliasSearchCount),
-                        searchHistory.createdAt.max().as(aliasLastedAt)))
+                        searchHistory.count().as(aliasSearchCount)))
                 .from(searchHistory)
                 .where(goeStartDate(startDateTime),
                        loeEndDate(endDateTime))
                 .groupBy(searchHistory.keyword)
                 .orderBy(aliasSearchCount.desc(),
-                         aliasLastedAt.desc())
+                        searchHistory.createdAt.max().desc())
                 .limit(10)
                 .fetch();
     }
