@@ -64,7 +64,7 @@ public class ProductRepositoryImpl implements ProductRepositoryQuery {
                 .select(qProduct.count())
                 .from(qProduct)
                 .leftJoin(qLike)
-                .on(qProduct.id.eq(qLike.id))
+                .on(qProduct.id.eq(qLike.product.id))
                 .where(whereClause)
                 .fetchOne();
         totalCount = totalCount == null ? 0 : totalCount;
