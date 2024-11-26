@@ -116,8 +116,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private Authentication createAuthentication(String email) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         log.info("객체생성" + userDetails);
-        return new UsernamePasswordAuthenticationToken(userDetails, null);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, null);
     }
+
 
     public void sendErrorResponse(HttpServletResponse response, ErrorCode errorCode, HttpServletRequest request) throws IOException {
         // JSON 형태로 응답 생성
