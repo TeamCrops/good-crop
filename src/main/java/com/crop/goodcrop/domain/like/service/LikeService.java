@@ -20,7 +20,7 @@ public class LikeService {
 
     public void createLike(UserDetailsImpl userDetail, LikeRequestDto requestDto, Long productId) {
         Member member = userDetail.getUser();
-        Like like = likeRepository.findByProductIdAndMemberId(member.getId(), productId);
+        Like like = likeRepository.findByProductIdAndMemberId(productId, member.getId());
         if (like != null)
             throw new ResponseException(ErrorCode.LIKE_DUPLICATE);
 
@@ -33,7 +33,7 @@ public class LikeService {
 
     public void deleteLike(UserDetailsImpl userDetail, LikeRequestDto requestDto, Long productId) {
         Member member = userDetail.getUser();
-        Like like = likeRepository.findByProductIdAndMemberId(member.getId(), productId);
+        Like like = likeRepository.findByProductIdAndMemberId(productId, member.getId());
         if (like == null)
             throw new ResponseException(ErrorCode.LIKE_NOT_FOUND);
 
