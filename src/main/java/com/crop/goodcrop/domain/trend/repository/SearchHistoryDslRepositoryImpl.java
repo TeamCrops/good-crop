@@ -1,7 +1,7 @@
 package com.crop.goodcrop.domain.trend.repository;
 
-import com.crop.goodcrop.domain.trend.dto.QTrendResponseDto;
-import com.crop.goodcrop.domain.trend.dto.TrendResponseDto;
+import com.crop.goodcrop.domain.trend.dto.QTopKeywordDto;
+import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
 import com.crop.goodcrop.domain.trend.entity.QSearchHistory;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.DatePath;
@@ -14,12 +14,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class TrendDslRepositoryImpl implements TrendDslRepository {
+public class SearchHistoryDslRepositoryImpl implements SearchHistoryDslRepository {
     private final JPAQueryFactory queryFactory;
     private final QSearchHistory searchHistory = QSearchHistory.searchHistory;
 
     @Override
-    public List<TrendResponseDto> findTopFiveOrderBySearchCount() {
+    public List<TopKeywordDto> findTopFiveOrderBySearchCount() {
         LocalDateTime endDateTime = LocalDateTime.now();
         LocalDateTime startDateTime = endDateTime.minusHours(2); // 2시간
 
@@ -27,17 +27,17 @@ public class TrendDslRepositoryImpl implements TrendDslRepository {
         DatePath<LocalDateTime> aliasLastedAt = Expressions.datePath(LocalDateTime.class, "lasted_at");
 
         return queryFactory
-                .select(new QTrendResponseDto(
+                .select(new QTopKeywordDto(
                         searchHistory.keyword,
                         searchHistory.count().as(aliasSearchCount),
                         searchHistory.createdAt.max().as(aliasLastedAt)))
                 .from(searchHistory)
                 .where(goeStartDate(startDateTime),
-                        loeEndDate(endDateTime))
+                       loeEndDate(endDateTime))
                 .groupBy(searchHistory.keyword)
                 .orderBy(aliasSearchCount.desc(),
-                        aliasLastedAt.desc())
-                .limit(5)
+                         aliasLastedAt.desc())
+                .limit(10)
                 .fetch();
     }
 

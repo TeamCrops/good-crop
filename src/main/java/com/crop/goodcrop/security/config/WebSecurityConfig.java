@@ -63,6 +63,7 @@ public class WebSecurityConfig {
                                 // 상품검색
                                 .requestMatchers("/api/v1/products").permitAll()
                                 // 인기 검색어
+                                .requestMatchers("/api/trends").permitAll()
                                 .requestMatchers("/api/v1/trends").permitAll()
                                 // 리뷰보기
                                 .requestMatchers(HttpMethod.GET, "/api/products/{productId}/reviews").permitAll()
