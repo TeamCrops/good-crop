@@ -1,5 +1,6 @@
 package com.crop.goodcrop.domain.member.controller;
 
+import com.crop.goodcrop.domain.member.dto.request.MemberDeleteRequestDto;
 import com.crop.goodcrop.domain.member.dto.request.MemberRequestDto;
 import com.crop.goodcrop.domain.member.dto.request.MemberUpdateRequestDto;
 import com.crop.goodcrop.domain.member.dto.response.MemberResponseDto;
@@ -19,7 +20,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/user/profile")
-    public ResponseEntity<MemberResponseDto> profile(@RequestBody MemberRequestDto requestDto) {
+    public ResponseEntity<MemberResponseDto> retrieveProfile(@RequestBody MemberRequestDto requestDto) {
         MemberResponseDto respDto = memberService.receiveUserInfo(requestDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -32,6 +33,12 @@ public class MemberController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(respDto);
+    }
+
+    @DeleteMapping("/user/profile")
+    public ResponseEntity<Void> deleteProfile(@Valid @RequestBody MemberDeleteRequestDto requestDto){
+        memberService.deleteUser(requestDto);
+        return ResponseEntity.noContent().build();
     }
 
 }
