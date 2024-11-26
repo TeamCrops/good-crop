@@ -1,5 +1,7 @@
 package com.crop.goodcrop.security.util;
 
+import com.crop.goodcrop.exception.ErrorCode;
+import com.crop.goodcrop.exception.ResponseException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -44,12 +46,11 @@ public class JwtUtil {
                         .compact();
     }
 
-
     public String substringToken(String tokenValue) {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring("Bearer ".length());
         }
-        throw new RuntimeException("Not Found Token");
+        throw new ResponseException(ErrorCode.TOKEN_MISSING);
     }
 
     public Claims parseToken(String tokenValue) {
@@ -62,19 +63,19 @@ public class JwtUtil {
                     .getBody();  // claims 반환
         } catch (ExpiredJwtException e) {
             // 토큰 만료 예외 처리
-            throw new RuntimeException("Token has expired");
+            throw new ResponseException(ErrorCode.EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
             // JWT 형식이 지원되지 않을 때 예외 처리
-            throw new RuntimeException("Unsupported JWT token");
+            throw new ResponseException(ErrorCode.INVALID_TOKEN_TYPE);
         } catch (MalformedJwtException e) {
             // 잘못된 JWT 형식에 대한 예외 처리
-            throw new RuntimeException("Invalid JWT token");
+            throw new ResponseException(ErrorCode.INVALID_TOKEN_FORMAT);
         } catch (SignatureException e) {
             // 서명 검증 실패 예외 처리
-            throw new RuntimeException("Invalid JWT signature");
+            throw new ResponseException(ErrorCode.INVALID_TOKEN_SIGNATURE);
         } catch (Exception e) {
-            // 일반적인 예외 처리
-            throw new RuntimeException("JWT token parsing error");
+            // 일반적인 예외 처리 (파서오류)
+            throw new ResponseException(ErrorCode.INVALID_TOKEN_PARSING);
         }
     }
 
