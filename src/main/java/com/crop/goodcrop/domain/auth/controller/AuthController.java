@@ -1,6 +1,6 @@
 package com.crop.goodcrop.domain.auth.controller;
 
-import com.crop.goodcrop.domain.auth.dto.request.SignUpRequestDto;
+import com.crop.goodcrop.domain.auth.dto.request.SignupRequestDto;
 import com.crop.goodcrop.domain.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class AuthController {
 
     //가입
     @PostMapping("/signup")
-    public ResponseEntity<Void>signup(@Valid @RequestBody SignUpRequestDto requestDto) {
+    public ResponseEntity<Void>signup(@Valid @RequestBody SignupRequestDto requestDto) {
         authService.signup(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

@@ -1,6 +1,6 @@
 package com.crop.goodcrop.domain.auth.service;
 
-import com.crop.goodcrop.domain.auth.dto.request.SignUpRequestDto;
+import com.crop.goodcrop.domain.auth.dto.request.SignupRequestDto;
 import com.crop.goodcrop.domain.member.entity.Member;
 import com.crop.goodcrop.domain.member.repository.MemberRepository;
 import com.crop.goodcrop.exception.ErrorCode;
@@ -17,7 +17,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     //가입
-    public void signup(SignUpRequestDto requestDto) {
+    public void signup(SignupRequestDto requestDto) {
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
             throw new ResponseException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
