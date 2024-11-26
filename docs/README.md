@@ -194,9 +194,21 @@
         </td>
     </tr>
     <tr>
-        <td><b>인기<br/>검색어</b></td>
+        <td><b>인기<br/>검색어<br/>갱신</b></td>
+        <td><span style=background-color:#3B36CFAA;font-weight:bold;>PUT</span></td>
+        <td><span>/api/v1/trends</span></td>
+        <td><code>N/A</code></td>
+        <td><code>N/A</code></td>
+        <td>200</td>
+        <td><code>N/A</code></td>
+        <td>
+            <span style=background-color:yellow;font-weight:bold;color:black;>200</span>: 성공
+        </td>
+    </tr>    
+    <tr>
+        <td><b>인기<br/>검색어<br/>조회</b></td>
         <td><span style=background-color:#22741CAA;font-weight:bold;>GET</span></td>
-        <td><span>/api/trend</span></td>
+        <td><span>/api/trends</span></td>
         <td><code>N/A</code></td>
         <td><code>N/A</code></td>
         <td>200</td>
@@ -354,14 +366,20 @@
  │    │   ├── 'entity'               
  │    │   ├── 'repository'           
  │    │   └── 'service'              
- │    └── 'review'                          # 리뷰 관련 class들을 모아놓은 폴더                  
+ │    ├── 'review'                          # 리뷰 관련 class들을 모아놓은 폴더                  
+ │    │   ├── 'controller'           
+ │    │   ├── 'dto'   
+ │    │   │   ├── 'request'  
+ │    │   │   └── 'response'                
+ │    │   ├── 'entity'               
+ │    │   ├── 'repository'           
+ │    │   └── 'service'      
+ │    └── 'trend'                           # 인기 검색어 관련 class들을 모아놓은 폴더                  
  │        ├── 'controller'           
  │        ├── 'dto'   
- │        │   ├── 'request'  
- │        │   └── 'response'                
  │        ├── 'entity'               
  │        ├── 'repository'           
- │        └── 'service'                      
+ │        └── 'service'                    
  ├── 'exception'                            # 예외 처리 관련 class들을 모아놓은 폴더
  └── 'security'                             # security관련 class들을 모아놓은 폴더
      ├── 'config'                           # security와 password설정 관련 class들을 모아놓은 폴더
