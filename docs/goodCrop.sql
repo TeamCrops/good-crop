@@ -6,11 +6,11 @@ BEGIN
     declare keyword VARCHAR(10);
     WHILE idx < 100000
         DO
-            set @keyword = SUBSTR(MD5(RAND()),1,8);
-INSERT INTO search_history(keyword, member_id, created_at)
-VALUES (@keyword, 1, NOW());
-SET idx = idx + 1;
-END WHILE;
+            set @keyword = SUBSTR(MD5(RAND()), 1, 8);
+            INSERT INTO search_history(keyword, member_id, created_at)
+            VALUES (@keyword, 1, NOW());
+            SET idx = idx + 1;
+        END WHILE;
 END$$
 DELIMITER $$
 CALL loopSearchHistoryInsert;

@@ -108,7 +108,7 @@
     <tr>
         <td><b>회원 탈퇴</b></td>
         <td><span style=background-color:#CE3636AA;font-weight:bold;>DELETE</span></td>
-        <td>/api/profile</span></td>
+        <td>/api/profile</td>
         <td>Authorization</td>
         <td><pre lang="json">{
     "password": String
@@ -152,7 +152,7 @@
     <tr>
         <td><b>단일 상품<br/>조회</b></td>
         <td><span style=background-color:#22741CAA;font-weight:bold;>GET</span></td>
-        <td><span>/api/v1/products?<br/>keyword={keyword}<br/>&minPrice={minPrice}<br/>&isLike={isLike}<br/>&page={page}<br/>&size={size}</span></td>
+        <td><span>/api/products<br/>/{productId}</span></td>
         <td><code>N/A</code></td>
         <td><code>N/A</code></td>
         <td>200</td>
@@ -170,7 +170,7 @@
     <tr>
         <td><b>상품 검색</b></td>
         <td><span style=background-color:#22741CAA;font-weight:bold;>GET</span></td>
-        <td><span>/api/products<br/>/{productId}</span></td>
+        <td><span>/api/v1/products?<br/>keyword={keyword}<br/>&minPrice={minPrice}<br/>&isTrend={isTrend}<br/>&page={page}<br/>&size={size}</span></td>
         <td><code>N/A</code></td>
         <td><code>N/A</code></td>
         <td>200</td>
@@ -208,7 +208,7 @@
         "keyword": "고구마"
       }
     ]  
-}/pre></td>
+}</pre></td>
         <td>
             <span style=background-color:yellow;font-weight:bold;color:black;>200</span>: 성공
         </td>
