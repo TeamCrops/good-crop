@@ -10,6 +10,7 @@ import java.util.List;
 
 @Getter
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PageResponseDto<T> {
