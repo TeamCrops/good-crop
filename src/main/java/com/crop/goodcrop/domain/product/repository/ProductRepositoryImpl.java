@@ -40,7 +40,7 @@ public class ProductRepositoryImpl implements ProductRepositoryQuery {
         JPAQuery<Product> query = queryFactory
                 .selectFrom(qProduct)
                 .leftJoin(qLike)
-                .on(qProduct.id.eq(qLike.id))
+                .on(qProduct.id.eq(qLike.product.id))
                 .where(whereClause);
 
         // 1) isTrend == true -> 기본정렬은 좋아요 수 내림차순 정렬
