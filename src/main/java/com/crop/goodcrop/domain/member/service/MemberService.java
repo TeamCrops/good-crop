@@ -33,11 +33,17 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberUpdateResponseDto modifyUserInfo(MemberUpdateRequestDto requestDto) {
+    public MemberUpdateResponseDto modifyUserInfo(MemberUpdateRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        if(!userDetails.getUser().getId().equals(requestDto.getId())) {
+            throw new ResponseException(ErrorCode.USER_FORBIDDEN);
+        }
+
         Member member = memberRepository.findById(requestDto.getId())
                 .orElseThrow(()-> new ResponseException(ErrorCode.USER_NOT_FOUND));
 
         member.modify(passwordEncoder.encode(requestDto.getPassword()), requestDto.getNickname(), requestDto.getBirth());
+        memberRepository.save(member);
         return new MemberUpdateResponseDto(member);
     }
 
