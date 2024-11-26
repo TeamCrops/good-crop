@@ -25,8 +25,8 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/user/profile")
-    public ResponseEntity<MemberResponseDto> retrieveProfile(@RequestBody MemberRequestDto requestDto) {
-        MemberResponseDto respDto = memberService.receiveUserInfo(requestDto);
+    public ResponseEntity<MemberResponseDto> retrieveProfile(@RequestBody MemberRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        MemberResponseDto respDto = memberService.receiveUserInfo(requestDto, userDetails);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(respDto);

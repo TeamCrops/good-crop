@@ -25,11 +25,13 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public MemberResponseDto receiveUserInfo(MemberRequestDto requestDto) {
-        Member member = memberRepository.findById(requestDto.getId())
-                .orElseThrow(()-> new ResponseException(ErrorCode.USER_NOT_FOUND));
+    public MemberResponseDto receiveUserInfo(MemberRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return new MemberResponseDto(member);
+        if(!userDetails.getUser().getId().equals(requestDto.getId())) {
+            throw new ResponseException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        return new MemberResponseDto(userDetails.getUser());
     }
 
     @Transactional
