@@ -1,10 +1,11 @@
 package com.crop.goodcrop.domain.review.controller;
 
+import com.crop.goodcrop.domain.common.dto.PageResponseDto;
 import com.crop.goodcrop.domain.review.dto.request.ReviewRequestDto;
 import com.crop.goodcrop.domain.review.dto.response.ReviewResponseDto;
+import com.crop.goodcrop.domain.review.entity.Review;
 import com.crop.goodcrop.domain.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +32,11 @@ public class ReviewController {
     }
 
     @GetMapping("")
-    public ResponseEntity<Page<ReviewResponseDto>> readReviews(
+    public ResponseEntity<PageResponseDto<Review>> readReviews(
             @PathVariable Long productId,
             @RequestParam(required = false, defaultValue = "1") int page
     ) {
-        Page<ReviewResponseDto> responses = reviewService.retrieveReviews(productId, page);
+        PageResponseDto<Review> responses = reviewService.retrieveReviews(productId, page);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(responses);
