@@ -1,5 +1,6 @@
 package com.crop.goodcrop.domain.member.service;
 
+import com.crop.goodcrop.domain.member.dto.request.MemberDeleteRequestDto;
 import com.crop.goodcrop.domain.member.dto.request.MemberRequestDto;
 import com.crop.goodcrop.domain.member.dto.request.MemberUpdateRequestDto;
 import com.crop.goodcrop.domain.member.dto.response.MemberResponseDto;
@@ -34,5 +35,16 @@ public class MemberService {
 
         member.modify(passwordEncoder.encode(requestDto.getPassword()), requestDto.getNickname(), requestDto.getBirth());
         return new MemberUpdateResponseDto(member);
+    }
+
+    public void deleteUser(MemberDeleteRequestDto requestDto) {
+        Member member = memberRepository.findById(requestDto.getId())
+                .orElseThrow(()-> new ResponseException(ErrorCode.USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
+            throw new ResponseException(ErrorCode.PASSWORD_NOT_MATCH);
+        }
+
+        memberRepository.delete(member);
     }
 }
