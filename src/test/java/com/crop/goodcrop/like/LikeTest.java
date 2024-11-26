@@ -23,7 +23,7 @@ public class LikeTest {
     @Test
     public void sampleData() {
         ArrayList<Member> members = new ArrayList<>();
-        for(int idx = 0; idx < 50; idx++) {
+        for (int idx = 0; idx < 50; idx++) {
             String name = RandomStringUtils.randomAlphanumeric(10);
             Member member = Member.builder()
                     .nickname(name)
@@ -36,8 +36,8 @@ public class LikeTest {
         memberRepository.saveAll(members);
 
         ArrayList<Product> products = new ArrayList<>();
-        for(Member member : members) {
-            for(int idx = 0; idx < 10; idx++) {
+        for (Member member : members) {
+            for (int idx = 0; idx < 10; idx++) {
                 String name = RandomStringUtils.randomAlphanumeric(10);
                 Product product = Product.builder()
                         .name(name)
