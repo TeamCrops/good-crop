@@ -1,23 +1,21 @@
 package com.crop.goodcrop.member;
 
 import com.crop.goodcrop.domain.member.dto.request.MemberRequestDto;
+import com.crop.goodcrop.domain.member.dto.request.MemberUpdateRequestDto;
 import com.crop.goodcrop.domain.member.dto.response.MemberResponseDto;
+import com.crop.goodcrop.domain.member.dto.response.MemberUpdateResponseDto;
 import com.crop.goodcrop.domain.member.entity.Member;
 import com.crop.goodcrop.domain.member.repository.MemberRepository;
 import com.crop.goodcrop.domain.member.service.MemberService;
-import com.crop.goodcrop.domain.review.dto.response.ReviewResponseDto;
-import com.crop.goodcrop.domain.review.entity.Review;
-import com.crop.goodcrop.domain.review.service.ReviewService;
 import com.crop.goodcrop.exception.ResponseException;
 import com.crop.goodcrop.security.entity.UserDetailsImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -39,6 +37,7 @@ class MemberServiceTest {
     @BeforeEach
     void setUp() {
         memberService = new MemberService(memberRepository, passwordEncoder);
+        memberRepository.deleteAll(); // 기존 데이터 제거
     }
 
     @Test
@@ -122,6 +121,80 @@ class MemberServiceTest {
     @Test
     @DisplayName("프로필 수정 - 성공")
     void modifyUserInfo_Success() {
+
+        // Given
+        Member member = memberRepository.save(Member.builder()
+                .id(1L)
+                .email("sparta@email.com")
+                .nickname("sparta")
+                .password("password1234!")
+                .birth(LocalDate.parse("2024-11-26"))
+                .build());
+
+        UserDetailsImpl userDetails = new UserDetailsImpl(member);
+        //when
+        MemberUpdateRequestDto requestDto = MemberUpdateRequestDto.builder()
+                .id(member.getId())
+                .password("password12345!")
+                .nickname("newsparta")
+                .birth(LocalDate.parse("2024-11-27"))
+                .build();
+        MemberUpdateResponseDto responseDto = memberService.modifyUserInfo(requestDto, userDetails);
+        // Then
+        assertThat(responseDto).isNotNull();
+        assertThat(responseDto.getNickname()).isEqualTo("newsparta");
+        assertThat(responseDto.getBirth()).isEqualTo("2024-11-27");
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("프로필 수정 - 실패(권한 없음)")
+    void modifyUserInfo_Forbidden_Fail() {
+
+        // Given
+        Member member = memberRepository.save(Member.builder()
+                .email("sparta1@email.com")
+                .nickname("sparta1")
+                .password(passwordEncoder.encode("password1234!"))
+                .birth(LocalDate.parse("2024-11-26"))
+                .build());
+
+        UserDetailsImpl otherUser = new UserDetailsImpl(
+                Member.builder().id(member.getId() + 1L).build() // 다른 사용자
+        );
+
+        MemberUpdateRequestDto requestDto = MemberUpdateRequestDto.builder()
+                .id(member.getId())
+                .password("newPassword123!")
+                .nickname("newNickname")
+                .birth(LocalDate.parse("2023-11-26"))
+                .build();
+
+        // When & Then
+        assertThrows(ResponseException.class, () -> {
+            memberService.modifyUserInfo(requestDto, otherUser);
+        }, "USER_FORBIDDEN 예외가 발생해야 합니다.");
+    }
+
+    @Test
+    @DisplayName("프로필 수정 - 실패(사용자 없음)")
+    void modifyUserInfo_UserNotFound_Fail() {
+        // Given
+        UserDetailsImpl userDetails = new UserDetailsImpl(
+                Member.builder().id(1L).build()
+        );
+
+        MemberUpdateRequestDto requestDto = MemberUpdateRequestDto.builder()
+                .id(999L) // 존재하지 않는 ID
+                .password("newPassword123!")
+                .nickname("newNickname")
+                .birth(LocalDate.parse("2023-11-26"))
+                .build();
+
+        // When & Then
+        assertThrows(ResponseException.class, () -> {
+            memberService.modifyUserInfo(requestDto, userDetails);
+        }, "USER_NOT_FOUND 예외가 발생해야 합니다.");
     }
 
     @Test
