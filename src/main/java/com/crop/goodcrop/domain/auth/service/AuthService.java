@@ -8,6 +8,7 @@ import com.crop.goodcrop.exception.ResponseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     //가입
+    @Transactional
     public void signup(SignUpRequestDto requestDto) {
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
             throw new ResponseException(ErrorCode.EMAIL_ALREADY_EXISTS);
