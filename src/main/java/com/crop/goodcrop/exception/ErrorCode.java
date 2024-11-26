@@ -39,6 +39,7 @@ public enum ErrorCode {
 
     // Product
     PRODUCT_NOT_FOUND("P000", "존재하지 않는 상품입니다", HttpStatus.NOT_FOUND),
+    PRODUCT_SEARCH_NOT_FOUND("P001", "검색 조건에 맞는 상품을 찾을 수 없습니다", HttpStatus.NOT_FOUND),
 
     // Like
     LIKE_NOT_FOUND("L000", "해당 상품에 좋아요를 누르지 않았습니다.", HttpStatus.NOT_FOUND),
