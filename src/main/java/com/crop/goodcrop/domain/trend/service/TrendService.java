@@ -21,7 +21,7 @@ public class TrendService {
         modifyTopKeyword(searchHistories);
     }
 
-    public void modifyTopKeyword(List<TopKeywordDto> searchHistories) {
+    private void modifyTopKeyword(List<TopKeywordDto> searchHistories) {
         topKeywordRepository.deleteAll();
         if(searchHistories == null || searchHistories.isEmpty())
             return;
