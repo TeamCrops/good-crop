@@ -3,5 +3,5 @@ package com.crop.goodcrop.domain.product.repository;
 import com.crop.goodcrop.domain.product.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryQuery {
 }
