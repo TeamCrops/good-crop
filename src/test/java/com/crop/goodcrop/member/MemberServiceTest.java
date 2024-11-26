@@ -86,7 +86,7 @@ class MemberServiceTest {
 
         // When
         MemberRequestDto requestDto = MemberRequestDto.builder()
-                .id(999L)
+                .id(member.getId()+1L)
                 .build();
 
         // Then
