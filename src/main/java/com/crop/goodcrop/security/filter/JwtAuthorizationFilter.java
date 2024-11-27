@@ -41,27 +41,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        String url = httpRequest.getRequestURI();
-        String method = httpRequest.getMethod();
-        // 허용된 URL
-        if (url.startsWith("/api/auth") || //회원가입,로그인
-                (url.matches("/api/products/\\d+") && "GET".equals(method)) || //단일 상품 조회
-                url.startsWith("/api/v1/products") || //상품검색
-                url.startsWith("/api/trends") || //인기 검색어
-                url.startsWith("/api/v1/trends") || //인기 검색어
-                (url.matches("/api/products/\\d+/reviews") && "GET".equals(method))//리뷰보기
-        ) {
-            chain.doFilter(request, response);
-            return;
-        }
-        log.info("현재 url = {}", url);
-
         // JWT 검증 로직 수행
         String bearerJwt = httpRequest.getHeader("Authorization");
 
         // 토큰 없음
         if (bearerJwt == null) {
-            sendErrorResponse(httpResponse, ErrorCode.TOKEN_MISSING,request);
+            chain.doFilter(request, response);
             return;
         }
 
