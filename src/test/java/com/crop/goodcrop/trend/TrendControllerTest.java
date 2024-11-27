@@ -17,8 +17,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,7 +41,7 @@ public class TrendControllerTest {
         doNothing().when(trendService).modifyTopKeyword();
 
         // when & then
-        mockMvc.perform(put("/api/v1/trends"))
+        mockMvc.perform(post("/api/v1/trends"))
                 .andExpect(status().isOk());
     }
 
