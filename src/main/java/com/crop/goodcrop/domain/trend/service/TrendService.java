@@ -16,12 +16,13 @@ public class TrendService {
     private final SearchHistoryRepository searchHistoryRepository;
     private final TopKeywordRepository topKeywordRepository;
 
-    public void modifyTopKeyword() {
-        List<TopKeywordDto> searchHistories = searchHistoryRepository.findTopFiveOrderBySearchCount();
-        modifyTopKeyword(searchHistories);
+    public List<TopKeywordDto> retrieveTopKeyword() {
+        List<TopKeyword> topKeywords = topKeywordRepository.findAll();
+        return topKeywords.stream().map(TopKeywordDto::from).toList();
     }
 
-    private void modifyTopKeyword(List<TopKeywordDto> searchHistories) {
+    public void modifyTopKeywordVersion1() {
+        List<TopKeywordDto> searchHistories = searchHistoryRepository.findTopFiveOrderBySearchCount();
         topKeywordRepository.deleteAll();
         if(searchHistories == null || searchHistories.isEmpty())
             return;
@@ -34,8 +35,7 @@ public class TrendService {
         topKeywordRepository.saveAll(topKeywords);
     }
 
-    public List<TopKeywordDto> retrieveTopKeyword() {
-        List<TopKeyword> topKeywords = topKeywordRepository.findAll();
-        return topKeywords.stream().map(TopKeywordDto::from).toList();
+    public void modifyTopKeywordVersion2() {
+
     }
 }

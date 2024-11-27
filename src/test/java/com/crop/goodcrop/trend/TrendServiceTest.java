@@ -26,7 +26,7 @@ public class TrendServiceTest {
 
     @Test
     @DisplayName("인기 검색어 갱신 성공")
-    void modifyTopKeyword_success() {
+    void modifyTopKeyword_Version1_success() {
         // given
         List<TopKeywordDto> searchHistories = List.of(new TopKeywordDto());
         List<TopKeyword> topKeywords = List.of(new TopKeyword());
@@ -35,7 +35,7 @@ public class TrendServiceTest {
 
         // when
         TrendService service = new TrendService(searchHistoryRepository, topKeywordRepository);
-        service.modifyTopKeyword();
+        service.modifyTopKeywordVersion1();
 
         // then
         verify(searchHistoryRepository, times(1)).findTopFiveOrderBySearchCount();
