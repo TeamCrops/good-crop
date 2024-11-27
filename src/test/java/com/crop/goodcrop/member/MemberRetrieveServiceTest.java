@@ -1,7 +1,9 @@
 package com.crop.goodcrop.member;
 
 import com.crop.goodcrop.domain.member.dto.request.MemberRequestDto;
+import com.crop.goodcrop.domain.member.dto.request.MemberUpdateRequestDto;
 import com.crop.goodcrop.domain.member.dto.response.MemberResponseDto;
+import com.crop.goodcrop.domain.member.dto.response.MemberUpdateResponseDto;
 import com.crop.goodcrop.domain.member.entity.Member;
 import com.crop.goodcrop.domain.member.repository.MemberRepository;
 import com.crop.goodcrop.domain.member.service.MemberService;
@@ -11,26 +13,37 @@ import com.crop.goodcrop.security.entity.UserDetailsImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
-class MemberServiceTest {
+@ExtendWith(MockitoExtension.class)
+class MemberRetrieveServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
 
     @InjectMocks
     private MemberService memberService;
+
     private Member member;
+
+    @Mock
     private UserDetailsImpl userDetails;
 
     @Mock
@@ -39,14 +52,17 @@ class MemberServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
         member = Member.builder()
                 .id(1L)
                 .email("test@email.com")
                 .nickname("testUser")
-                .password(passwordEncoder.encode("password1234!"))
+                .password("password1234!")
                 .birth(LocalDate.of(2000, 1, 1))
                 .build();
+
         userDetails = new UserDetailsImpl(member);
+
     }
 
     @Test
@@ -101,13 +117,4 @@ class MemberServiceTest {
         assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode(), "예상된 에러코드와 일치해야 합니다.");
     }
 
-    @Test
-    @DisplayName("프로필 수정 - 성공")
-    void modifyUserInfo_Success() {
-    }
-
-    @Test
-    @DisplayName("회원 탈퇴 - 성공")
-    void deleteUser_Success() {
-    }
 }
