@@ -19,6 +19,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static com.crop.goodcrop.exception.ErrorCode.*;
 
 @Service
@@ -30,22 +32,19 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     public ReviewResponseDto createReview(Long memberId, Long productId, ReviewCreateRequestDto reviewRequestDto) {
-        // TODO
-        //  - 이미 필터에서 확인한 부분으로 삭제
-        // DB에 존재하는 유저인지 확인
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new ResponseException(USER_NOT_FOUND));
-
         // DB에 존재하는 상품인지 확인
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResponseException(PRODUCT_NOT_FOUND));
 
-        Review review = reviewRepository.save(Review.of(reviewRequestDto.getComment(), reviewRequestDto.getScore(), member, product));
+        Optional<Member> member = memberRepository.findById(memberId);
+
+        Review review = reviewRepository.save(Review.of(reviewRequestDto.getComment(), reviewRequestDto.getScore(), member.orElse(null), product));
 
         return ReviewResponseDto.from(review);
     }
 
-    public PageResponseDto<Review> retrieveReviews(Long productId, int page) {
+    @Transactional(readOnly = true)
+    public PageResponseDto<ReviewResponseDto> retrieveReviews(Long productId, int page) {
         // DB에 존재하는 상품인지 확인
         productRepository.findById(productId)
                 .orElseThrow(() -> new ResponseException(PRODUCT_NOT_FOUND));
@@ -53,7 +52,8 @@ public class ReviewService {
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.DESC, "createdAt");
 
         Page<Review> reviews = reviewRepository.findByProductId(productId, pageable);
-        return PageResponseDto.of(reviews.toList(), pageable, reviews.getTotalPages());
+        Page<ReviewResponseDto> responses = reviews.map(ReviewResponseDto::from);
+        return PageResponseDto.of(responses.toList(), pageable, responses.getTotalPages());
     }
 
     @Transactional

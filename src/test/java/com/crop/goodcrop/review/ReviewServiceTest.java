@@ -108,7 +108,7 @@ class ReviewServiceTest {
         }
 
         // When
-        PageResponseDto<Review> responses = reviewService.retrieveReviews(product.getId(), 1);
+        PageResponseDto<ReviewResponseDto> responses = reviewService.retrieveReviews(product.getId(), 1);
 
         // Then
         assertThat(responses).isNotNull();
