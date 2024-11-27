@@ -4,7 +4,6 @@ import com.crop.goodcrop.domain.common.dto.PageResponseDto;
 import com.crop.goodcrop.domain.review.dto.request.ReviewCreateRequestDto;
 import com.crop.goodcrop.domain.review.dto.request.ReviewModifyRequestDto;
 import com.crop.goodcrop.domain.review.dto.response.ReviewResponseDto;
-import com.crop.goodcrop.domain.review.entity.Review;
 import com.crop.goodcrop.domain.review.service.ReviewService;
 import com.crop.goodcrop.security.entity.UserDetailsImpl;
 import jakarta.validation.Valid;
@@ -35,11 +34,11 @@ public class ReviewController {
     }
 
     @GetMapping("")
-    public ResponseEntity<PageResponseDto<Review>> readReviews(
+    public ResponseEntity<PageResponseDto<ReviewResponseDto>> readReviews(
             @PathVariable Long productId,
             @RequestParam(required = false, defaultValue = "1") int page
     ) {
-        PageResponseDto<Review> responses = reviewService.retrieveReviews(productId, page);
+        PageResponseDto<ReviewResponseDto> responses = reviewService.retrieveReviews(productId, page);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(responses);
