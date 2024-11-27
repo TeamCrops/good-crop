@@ -16,8 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.attribute.UserPrincipal;
-
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -28,7 +26,7 @@ public class MemberService {
     public MemberResponseDto receiveUserInfo(MemberRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         if(!userDetails.getUser().getId().equals(requestDto.getId())) {
-            throw new ResponseException(ErrorCode.USER_NOT_FOUND);
+            throw new ResponseException(ErrorCode.USER_RETRIEVE_FORBIDDEN);
         }
 
         return new MemberResponseDto(userDetails.getUser());
@@ -38,7 +36,7 @@ public class MemberService {
     public MemberUpdateResponseDto modifyUserInfo(MemberUpdateRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         if(!userDetails.getUser().getId().equals(requestDto.getId())) {
-            throw new ResponseException(ErrorCode.USER_FORBIDDEN);
+            throw new ResponseException(ErrorCode.USER_UPDATE_FORBIDDEN);
         }
 
         Member member = memberRepository.findById(requestDto.getId())
@@ -52,7 +50,7 @@ public class MemberService {
     public void deleteUser(MemberDeleteRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         //아이디가 다를 때
         if(!userDetails.getUser().getId().equals(requestDto.getId())) {
-            throw new ResponseException(ErrorCode.USER_NOT_FOUND);
+            throw new ResponseException(ErrorCode.USER_DELETE_FORBIDDEN);
         }
         //비밀번호가 다를 때
         if (!passwordEncoder.matches(requestDto.getPassword(), userDetails.getUser().getPassword())) {
