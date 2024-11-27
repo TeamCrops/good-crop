@@ -6,10 +6,12 @@ import com.crop.goodcrop.domain.review.dto.request.ReviewModifyRequestDto;
 import com.crop.goodcrop.domain.review.dto.response.ReviewResponseDto;
 import com.crop.goodcrop.domain.review.entity.Review;
 import com.crop.goodcrop.domain.review.service.ReviewService;
+import com.crop.goodcrop.security.entity.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,14 +23,11 @@ public class ReviewController {
 
     @PostMapping("")
     public ResponseEntity<ReviewResponseDto> writeReview(
-            // TODO
-            //  - Security 적용
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestParam Long memberId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long productId,
             @Valid @RequestBody ReviewCreateRequestDto reviewRequestDto
     ) {
-//        Long memberId = userDetails.getMember().getId();
+        Long memberId = userDetails.getUser().getId();
         ReviewResponseDto reviewResponseDto = reviewService.createReview(memberId, productId, reviewRequestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -48,15 +47,12 @@ public class ReviewController {
 
     @PutMapping("/{reviewId}")
     public ResponseEntity<ReviewResponseDto> updateReview(
-            // TODO
-            //  - Security 적용
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestParam Long memberId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long productId,
             @PathVariable Long reviewId,
             @Valid @RequestBody ReviewModifyRequestDto reviewRequestDto
     ) {
-//        Long memberId = userDetails.getMember().getId();
+        Long memberId = userDetails.getUser().getId();
         ReviewResponseDto reviewResponseDto = reviewService.modifyReview(memberId, productId, reviewId, reviewRequestDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -65,14 +61,11 @@ public class ReviewController {
 
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<ReviewResponseDto> deleteReview(
-            // TODO
-            //  - Security 적용
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestParam Long memberId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long productId,
             @PathVariable Long reviewId
     ) {
-//        Long memberId = userDetails.getMember().getId();
+        Long memberId = userDetails.getUser().getId();
         reviewService.deleteReview(memberId, productId, reviewId);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
