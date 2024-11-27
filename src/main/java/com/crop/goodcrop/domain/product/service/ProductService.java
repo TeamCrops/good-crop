@@ -6,9 +6,12 @@ import com.crop.goodcrop.domain.product.dto.response.ProductResponseDto;
 import com.crop.goodcrop.domain.product.entity.Product;
 import com.crop.goodcrop.domain.product.repository.ProductRepository;
 import com.crop.goodcrop.domain.review.repository.ReviewRepository;
+import com.crop.goodcrop.domain.trend.repository.TopKeywordRepository;
 import com.crop.goodcrop.exception.ErrorCode;
 import com.crop.goodcrop.exception.ResponseException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,12 +22,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
+    private final TopKeywordRepository topKeywordRepository;
 
     public ProductResponseDto retrieveProduct(Long productId) {
         Product product = productRepository.findById(productId)
@@ -76,4 +81,49 @@ public class ProductService {
                 respDtos, pageable, products.getTotalPages()
         );
     }
+
+
+    //상품검색 캐시 적용
+    @Cacheable(value = "searchProductsCache", key = "#keyword", condition = "@productService.isTopKeyword(#keyword)")
+    public PageResponseDto<ProductResponseDto> searchProductsWithCache(String keyword, int minPrice, boolean isTrend, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        Page<Product> products = productRepository.searchProductsWithFilters(keyword, minPrice, isTrend, pageable)
+                .orElseThrow(() -> new ResponseException(ErrorCode.PRODUCT_SEARCH_NOT_FOUND));
+
+
+        List<ProductAvgScoreDto> productResponse = reviewRepository.findProductWithAvgScores(products.getContent());
+
+        log.debug("Found {} avgScores for keyword: {}", productResponse.size(), keyword);
+
+
+        // findProductWithAvgScores 메서드는 수행 시 id 필드의 기준으로 기본 오름차순 정렬을 하기 때문에 다시 재정렬 해줘야 함
+        Map<Long, ProductAvgScoreDto> productResponseMap = productResponse.stream()
+                .collect(Collectors.toMap(
+                        response -> response.getProduct().getId(),
+                        response -> response
+                ));
+        List<ProductResponseDto> respDtos = products.getContent().stream()
+                .map(product -> {
+                    ProductAvgScoreDto avgScoreDto = productResponseMap.get(product.getId());
+                    Double avgScore = (avgScoreDto != null && avgScoreDto.getAvgScore() != null) ? avgScoreDto.getAvgScore() : -1.0;
+                    return new ProductResponseDto(
+                            product.getId(),
+                            product.getName(),
+                            product.getPrice(),
+                            avgScore
+                    );
+                }).toList();
+        return PageResponseDto.of(
+                respDtos, pageable, products.getTotalPages()
+        );
+    }
+
+
+    // 사용자 검색어가 인기 검색어와 일치하는지 확인 메서드
+    public boolean isTopKeyword(String keyword) {
+        return topKeywordRepository.existsByKeyword(keyword);
+    }
+
 }
