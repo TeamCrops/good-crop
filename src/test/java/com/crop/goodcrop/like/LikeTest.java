@@ -22,30 +22,30 @@ public class LikeTest {
 
     @Test
     public void sampleData() {
-        ArrayList<Member> members = new ArrayList<>();
-        for (int idx = 0; idx < 50; idx++) {
-            String name = RandomStringUtils.randomAlphanumeric(10);
-            Member member = Member.builder()
-                    .nickname(name)
-                    .email(name + "@email.com")
-                    .password("1234")
-                    .birth(LocalDate.now())
-                    .build();
-            members.add(member);
-        }
-        memberRepository.saveAll(members);
-
-        ArrayList<Product> products = new ArrayList<>();
-        for (Member member : members) {
-            for (int idx = 0; idx < 10; idx++) {
-                String name = RandomStringUtils.randomAlphanumeric(10);
-                Product product = Product.builder()
-                        .name(name)
-                        .price(5000)
-                        .build();
-                products.add(product);
-            }
-        }
-        productRepository.saveAll(products);
+//        ArrayList<Member> members = new ArrayList<>();
+//        for (int idx = 0; idx < 50; idx++) {
+//            String name = RandomStringUtils.randomAlphanumeric(10);
+//            Member member = Member.builder()
+//                    .nickname(name)
+//                    .email(name + "@email.com")
+//                    .password("1234")
+//                    .birth(LocalDate.now())
+//                    .build();
+//            members.add(member);
+//        }
+//        memberRepository.saveAll(members);
+//
+//        ArrayList<Product> products = new ArrayList<>();
+//        for (Member member : members) {
+//            for (int idx = 0; idx < 10; idx++) {
+//                String name = RandomStringUtils.randomAlphanumeric(10);
+//                Product product = Product.builder()
+//                        .name(name)
+//                        .price(5000)
+//                        .build();
+//                products.add(product);
+//            }
+//        }
+//        productRepository.saveAll(products);
     }
 }

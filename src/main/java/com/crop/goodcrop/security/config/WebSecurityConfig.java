@@ -62,6 +62,9 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/products/{productId}").permitAll()
                                 // 상품검색
                                 .requestMatchers("/api/v1/products").permitAll()
+                                // 인기 검색어
+                                .requestMatchers("/api/trends").permitAll()
+                                .requestMatchers("/api/v1/trends").permitAll()
                                 // 리뷰보기
                                 .requestMatchers(HttpMethod.GET, "/api/products/{productId}/reviews").permitAll()
                                 .anyRequest().authenticated() //그 외 모든 요청 인증처리
