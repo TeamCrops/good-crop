@@ -26,6 +26,7 @@ public enum ErrorCode {
 
     // Server(S)
     INTERNAL_SERVER_ERROR("S000","서버 내부 오류", HttpStatus.INTERNAL_SERVER_ERROR),
+    SECURITY_PERMIT_ERROR("S001","Security 인증 오류", HttpStatus.UNAUTHORIZED),
 
     // Common(C)
     UNKNOWN_ERROR("C000","알 수 없는 에러", HttpStatus.INTERNAL_SERVER_ERROR),
