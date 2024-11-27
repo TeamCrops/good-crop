@@ -38,7 +38,7 @@ public class TrendControllerTest {
     @Test
     void modifyTopKeyword() throws Exception {
         // given
-        doNothing().when(trendService).modifyTopKeyword();
+        doNothing().when(trendService).modifyTopKeywordVersion1();
 
         // when & then
         mockMvc.perform(post("/api/v1/trends"))
