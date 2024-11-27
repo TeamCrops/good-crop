@@ -25,9 +25,9 @@
         <td><span>/api/auth/signup</span></td>
         <td><code>N/A</Code></td>
         <td><pre lang="json">{
-    "email": String,
-    "password": String,
-    "nickname": String,
+    "email": "hong@email.com",
+    "password": "1q2w3e4r#",
+    "nickname": "홍길동",
     "birth": "2000-01-01"
 }</pre></td>
         <td>201</td>
@@ -43,18 +43,12 @@
         <td><span style=background-color:#786E12AA;font-weight:bold;>POST</span></td>
         <td><span>/api/auth/signin</span></td>
         <td><code>N/A</Code></td>
-        <td><pre lang="json">{
-    "email": String,
-    "password": String
-}</pre></td>
+        <td><code>N/A</Code></td>
         <td>
             <span>200</span></br>
             <span>JWT</span>
         </td>
-        <td><pre lang="json">{
-    "message": "login success",
-    "status": 201
-}</pre></td>
+        <td><code>N/A</Code></td>
         <td>
             <span style=background-color:yellow;font-weight:bold;color:black;>200</span>: 성공<br/>
             <span style=background-color:skyblue;font-weight:bold;color:black;>400</span>: 잘못된 요청<br/>
@@ -64,7 +58,7 @@
     <tr>
         <td><b>프로필<br/>조회</b></td>
         <td><span style=background-color:#22741CAA;font-weight:bold;>GET</span></td>
-        <td><span>/api/profile</span></td>
+        <td><span>/api/user/profile</span></td>
         <td>Authorization</td>
         <td><code>N/A</code></td>
         <td>200</td>
@@ -84,11 +78,11 @@
     <tr>
         <td><b>프로필<br/>수정</b></td>
         <td><span style=background-color:#3B36CFAA;font-weight:bold;>PUT</span></td>
-        <td>/api/profile</td>
+        <td>/api/user/profile</td>
         <td>Authorization</td>
         <td><pre lang="json">{
-    "password": String,
-    "nickname": String,
+    "password": "Admin123!",
+    "nickname": "닉네임",
     "birth": "2000-01-01"
 }</pre></td>
         <td>200</td>
@@ -111,7 +105,7 @@
         <td>/api/profile</td>
         <td>Authorization</td>
         <td><pre lang="json">{
-    "password": String
+    "password": "Admin123!"
 }</pre></td>
         <td>204</td>
         <td><code>N/A</Code></td>
@@ -126,13 +120,16 @@
         <td><span style=background-color:#786E12AA;font-weight:bold;>POST</span></td>
         <td><span>/api/likes<br/>/{productId}</span></td>
         <td>Authorization</td>
-        <td><code>N/A</Code></td>
+        <td><pre lang="json">{
+    "id": 1
+}</pre></td>
         <td>201</td>
         <td><code>N/A</Code></td>
         <td>
             <span style=background-color:yellow;font-weight:bold;color:black;>201</span>: 성공<br/>
             <span style=background-color:skyblue;font-weight:bold;color:black;>400</span>: 토큰이 없음<br/>
-            <span style=background-color:skyblue;font-weight:bold;color:black;>401</span>: 인증 실패
+            <span style=background-color:skyblue;font-weight:bold;color:black;>401</span>: 인가 실패<br/>
+            <span style=background-color:skyblue;font-weight:bold;color:black;>400</span>: 중복된 좋아요
         </td> 
     </tr>
     <tr>
@@ -140,13 +137,16 @@
         <td><span style=background-color:#CE3636AA;font-weight:bold;>DELETE</span></td>
         <td><span>/api/likes<br/>/{productId}</span></td>
         <td>Authorization</td>
-        <td><code>N/A</Code></td>
+        <td><pre lang="json">{
+    "id": 1
+}</pre></td>
         <td>204</td>
         <td><code>N/A</Code></td>
         <td>
             <span style=background-color:yellow;font-weight:bold;color:black;>204</span>: 성공<br/>
             <span style=background-color:skyblue;font-weight:bold;color:black;>400</span>: 토큰이 없음<br/>
-            <span style=background-color:skyblue;font-weight:bold;color:black;>401</span>: 인증 실패
+            <span style=background-color:skyblue;font-weight:bold;color:black;>401</span>: 인가 실패<br/>
+            <span style=background-color:skyblue;font-weight:bold;color:black;>404</span>: 좋아요를 누르지 않음       
         </td> 
     </tr>    
     <tr>
@@ -164,7 +164,9 @@
     "avgScore": 4.8
 }</pre></td>
         <td>
-            <span style=background-color:yellow;font-weight:bold;color:black;>200</span>: 성공
+            <span style=background-color:yellow;font-weight:bold;color:black;>200</span>: 성공<br/>        
+            <span style=background-color:skyblue;font-weight:bold;color:black;>400</span>: 토큰이 없음<br/>
+            <span style=background-color:skyblue;font-weight:bold;color:black;>404</span>: 존재하지 않는 상품
         </td>
     </tr>    
     <tr>
@@ -190,11 +192,13 @@
     "totalPage": 1
 }</pre></td>
         <td>
-            <span style=background-color:yellow;font-weight:bold;color:black;>200</span>: 성공
+            <span style=background-color:yellow;font-weight:bold;color:black;>200</span>: 성공<br/>        
+            <span style=background-color:skyblue;font-weight:bold;color:black;>400</span>: 토큰이 없음<br/>
+            <span style=background-color:skyblue;font-weight:bold;color:black;>404</span>: 검색 상품 없음
         </td>
     </tr>
     <tr>
-        <td><b>인기<br/>검색어<br/>갱신</b></td>
+        <td><b>인기<br/>검색어<br/>갱신 v1</b></td>
         <td><span style=background-color:#786E12AA;font-weight:bold;>POST</span></td>
         <td><span>/api/v1/trends</span></td>
         <td><code>N/A</code></td>
@@ -231,7 +235,7 @@
         <td><span>/api/products<br/>/{productId}/reviews</span></td>
         <td>Authorization</td>
         <td><pre lang="json">{
-    "id": Long,
+    "id": 1,
     "star": 5,
     "comment": "너무 맛있어요!"
 }</pre></td>
@@ -289,7 +293,7 @@
         <td><span>/api/products<br/>/{productId}/reviews<br/>/{reviewId}</span></td>
         <td>Authorization</td>
         <td><pre lang="json">{
-    "id": Long.
+    "id": 1.
     "star": 4,
     "comment": "맛있어요!"
 }</pre></td>
@@ -313,7 +317,7 @@
         <td><span>/api/products<br/>/{productId}/reviews<br/>/{reviewId}</span></td>
         <td>Authorization</td>
         <td><pre lang="json">{
-    "id": Long
+    "id": 1
 }</pre></td>
         <td>204</td>
         <td><code>N/A</Code></td>
