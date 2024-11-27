@@ -97,7 +97,7 @@ public class MemberUpdateServiceTest {
             memberService.modifyUserInfo(requestDto, userDetails);
         });
 
-        assertEquals(ErrorCode.USER_FORBIDDEN, exception.getErrorCode());
+        assertEquals(ErrorCode.USER_UPDATE_FORBIDDEN, exception.getErrorCode());
 
     }
 

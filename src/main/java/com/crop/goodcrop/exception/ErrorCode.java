@@ -34,8 +34,10 @@ public enum ErrorCode {
     // User(U)
     USER_NOT_FOUND("U000", "존재하지 않는 유저입니다", HttpStatus.NOT_FOUND),
     ALREADY_USER_EXIST("U001", "존재하는 사용자입니다.", HttpStatus.ALREADY_REPORTED),
-    USER_FORBIDDEN("U002", "프로필을 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN),
+    USER_UPDATE_FORBIDDEN("U002", "프로필을 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN),
     PASSWORD_NOT_MATCH("U003", "비밀번호가 다릅니다.", HttpStatus.BAD_REQUEST),
+    USER_RETRIEVE_FORBIDDEN("U004", "프로필을 조회할 권한이 없습니다", HttpStatus.FORBIDDEN),
+    USER_DELETE_FORBIDDEN("U005","회원 탈퇴할 권한이 없습니다", HttpStatus.FORBIDDEN),
 
     // Product
     PRODUCT_NOT_FOUND("P000", "존재하지 않는 상품입니다", HttpStatus.NOT_FOUND),
