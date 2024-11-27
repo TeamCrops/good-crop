@@ -195,7 +195,7 @@
     </tr>
     <tr>
         <td><b>인기<br/>검색어<br/>갱신</b></td>
-        <td><span style=background-color:#3B36CFAA;font-weight:bold;>PUT</span></td>
+        <td><span style=background-color:#786E12AA;font-weight:bold;>POST</span></td>
         <td><span>/api/v1/trends</span></td>
         <td><code>N/A</code></td>
         <td><code>N/A</code></td>
