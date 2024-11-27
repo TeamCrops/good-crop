@@ -67,11 +67,11 @@ public class ReviewService {
 
         // 리뷰를 수정할 권한이 없는 경우
         if (!memberId.equals(review.getMember().getId())) {
-            throw new ResponseException(NO_PERMISSION_TO_EDIT);
+            throw new ResponseException(REVIEW_NO_PERMISSION_TO_EDIT);
         }
         // 해당 상품의 리뷰가 아닌 경우
         if (!productId.equals(review.getProduct().getId())) {
-            throw new ResponseException(NOT_A_REVIEW_OF_THE_PRODUCT);
+            throw new ResponseException(REVIEW_NOT_OWNED);
         }
 
         review.modify(requestDto.getComment(), requestDto.getScore());
@@ -90,11 +90,11 @@ public class ReviewService {
 
         // 리뷰를 수정할 권한이 없는 경우
         if (!memberId.equals(review.getMember().getId())) {
-            throw new ResponseException(NO_PERMISSION_TO_EDIT);
+            throw new ResponseException(REVIEW_NO_PERMISSION_TO_EDIT);
         }
         // 해당 상품의 리뷰가 아닌 경우
         if (!productId.equals(review.getProduct().getId())) {
-            throw new ResponseException(NOT_A_REVIEW_OF_THE_PRODUCT);
+            throw new ResponseException(REVIEW_NOT_OWNED);
         }
 
         reviewRepository.delete(review);
