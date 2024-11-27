@@ -47,8 +47,8 @@ public enum ErrorCode {
 
     // Review
     REVIEW_NOT_FOUND("R000", "존재하지 않는 리뷰입니다", HttpStatus.NOT_FOUND),
-    NO_PERMISSION_TO_EDIT("R001", "리뷰를 수정할 권한이 없습니다", HttpStatus.FORBIDDEN),
-    NOT_A_REVIEW_OF_THE_PRODUCT("R002", "해당 가게의 리뷰가 아닙니니다", HttpStatus.FORBIDDEN);
+    REVIEW_NO_PERMISSION_TO_EDIT("R001", "리뷰를 수정할 권한이 없습니다", HttpStatus.FORBIDDEN),
+    REVIEW_NOT_OWNED("R002", "해당 가게의 리뷰가 아닙니니다", HttpStatus.FORBIDDEN);
 
     private final String errCode;
     private final String message;

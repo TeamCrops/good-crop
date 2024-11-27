@@ -67,15 +67,36 @@ public class ReviewService {
 
         // 리뷰를 수정할 권한이 없는 경우
         if (!memberId.equals(review.getMember().getId())) {
-            throw new ResponseException(NO_PERMISSION_TO_EDIT);
+            throw new ResponseException(REVIEW_NO_PERMISSION_TO_EDIT);
         }
         // 해당 상품의 리뷰가 아닌 경우
         if (!productId.equals(review.getProduct().getId())) {
-            throw new ResponseException(NOT_A_REVIEW_OF_THE_PRODUCT);
+            throw new ResponseException(REVIEW_NOT_OWNED);
         }
 
         review.modify(requestDto.getComment(), requestDto.getScore());
 
         return ReviewResponseDto.from(review);
+    }
+
+    @Transactional
+    public void deleteReview(Long memberId, Long productId, Long reviewId) {
+        // DB에 존재하는 상품인지 확인
+        productRepository.findById(productId)
+                .orElseThrow(() -> new ResponseException(PRODUCT_NOT_FOUND));
+        // DB에 존재하는 리뷰인지 확인
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ResponseException(REVIEW_NOT_FOUND));
+
+        // 리뷰를 수정할 권한이 없는 경우
+        if (!memberId.equals(review.getMember().getId())) {
+            throw new ResponseException(REVIEW_NO_PERMISSION_TO_EDIT);
+        }
+        // 해당 상품의 리뷰가 아닌 경우
+        if (!productId.equals(review.getProduct().getId())) {
+            throw new ResponseException(REVIEW_NOT_OWNED);
+        }
+
+        reviewRepository.delete(review);
     }
 }

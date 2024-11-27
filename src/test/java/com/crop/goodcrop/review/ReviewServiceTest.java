@@ -20,6 +20,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @Import(QueryDslConfig.class)
@@ -154,6 +156,35 @@ class ReviewServiceTest {
         assertThat(responseDto.getComment()).isEqualTo("먹고 나서 배탈났어요...");
         assertThat(responseDto.getScore()).isEqualTo(1);
         assertThat(responseDto.getNickname()).isEqualTo(member.getNickname());
+    }
 
+    @Test
+    @DisplayName("리뷰 삭제 - 성공")
+    void deleteReview_Success() {
+        // Given
+        Member member = entityManager.persistAndFlush(
+                Member.builder()
+                        .email("sparta@email.com")
+                        .password("password1234!")
+                        .build());
+
+        Product product = entityManager.persistAndFlush(
+                Product.builder()
+                        .name("크리스마스 한정판 구황작물 세트")
+                        .build());
+
+        Review review = entityManager.persistAndFlush(
+                Review.builder()
+                        .score(5)
+                        .member(member)
+                        .product(product)
+                        .build());
+
+        // When
+        reviewService.deleteReview(member.getId(), product.getId(), review.getId());
+
+        // Then
+        Optional<Review> deletedReview = reviewRepository.findById(review.getId());
+        assertThat(deletedReview).isEmpty();
     }
 }

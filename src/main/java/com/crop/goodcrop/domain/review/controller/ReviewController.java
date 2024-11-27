@@ -62,4 +62,20 @@ public class ReviewController {
                 .status(HttpStatus.OK)
                 .body(reviewResponseDto);
     }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<ReviewResponseDto> deleteReview(
+            // TODO
+            //  - Security 적용
+//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam Long memberId,
+            @PathVariable Long productId,
+            @PathVariable Long reviewId
+    ) {
+//        Long memberId = userDetails.getMember().getId();
+        reviewService.deleteReview(memberId, productId, reviewId);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
 }
