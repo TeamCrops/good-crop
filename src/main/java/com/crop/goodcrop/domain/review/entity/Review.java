@@ -42,4 +42,9 @@ public class Review extends Timestamped {
     public static Review of(String comment, int score, Member member, Product product) {
         return new Review(comment, score, member, product);
     }
+
+    public void modify(String comment, int score) {
+        this.comment = comment;
+        this.score = score;
+    }
 }
