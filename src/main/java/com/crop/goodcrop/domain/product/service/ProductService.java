@@ -1,14 +1,18 @@
 package com.crop.goodcrop.domain.product.service;
 
+import com.crop.goodcrop.config.CacheConfig;
 import com.crop.goodcrop.domain.common.dto.PageResponseDto;
 import com.crop.goodcrop.domain.product.dto.response.ProductAvgScoreDto;
 import com.crop.goodcrop.domain.product.dto.response.ProductResponseDto;
 import com.crop.goodcrop.domain.product.entity.Product;
 import com.crop.goodcrop.domain.product.repository.ProductRepository;
 import com.crop.goodcrop.domain.review.repository.ReviewRepository;
+import com.crop.goodcrop.domain.trend.entity.SearchHistory;
+import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
 import com.crop.goodcrop.exception.ErrorCode;
 import com.crop.goodcrop.exception.ResponseException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +29,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
+    private final SearchHistoryRepository searchHistoryRepository;
 
     public ProductResponseDto retrieveProduct(Long productId) {
         Product product = productRepository.findById(productId)
@@ -72,8 +77,28 @@ public class ProductService {
                             avgScore
                     );
                 }).toList();
+
+        // === ver1 직접 SearchHistory 테이블에 Insert ===
+        createSearchHistory(null, keyword);
+        // === ver2 캐시에 올린다. ===
+        updateCacheSearchHistory(null, keyword);
+        // ============
+
         return PageResponseDto.of(
                 respDtos, pageable, products.getTotalPages()
         );
+    }
+
+    private void createSearchHistory(Long memberId, String keyword) {
+        SearchHistory searchHistory = SearchHistory.builder()
+                .memberId(memberId)
+                .keyword(keyword)
+                .build();
+        searchHistoryRepository.save(searchHistory);
+    }
+
+    @CachePut(value = CacheConfig.SEARCH_HISTORY, key = "#id")
+    public String updateCacheSearchHistory(String id, String data) {
+        return data; // 이러면 캐시에 저장되나요..?
     }
 }
