@@ -15,7 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,10 +54,17 @@ public class ProductService {
         최대한 N+1 발생 하지 않기 위해 위 방법을 택했습니다.
          */
         List<ProductAvgScoreDto> productResponse = reviewRepository.findProductWithAvgScores(products.getContent());
-        List<ProductResponseDto> respDtos = productResponse.stream()
-                .map(result -> {
-                    Product product = result.getProduct();
-                    Double avgScore = result.getAvgScore() == null ? -1.0 : result.getAvgScore();
+
+        // findProductWithAvgScores 메서드는 수행 시 id 필드의 기준으로 기본 오름차순 정렬을 하기 때문에 다시 재정렬 해줘야 함
+        Map<Long, ProductAvgScoreDto> productResponseMap = productResponse.stream()
+                .collect(Collectors.toMap(
+                        response -> response.getProduct().getId(),
+                        response -> response
+                ));
+        List<ProductResponseDto> respDtos = products.getContent().stream()
+                .map(product -> {
+                    ProductAvgScoreDto avgScoreDto = productResponseMap.get(product.getId());
+                    Double avgScore = (avgScoreDto != null && avgScoreDto.getAvgScore() != null) ? avgScoreDto.getAvgScore() : -1.0;
                     return new ProductResponseDto(
                             product.getId(),
                             product.getName(),
