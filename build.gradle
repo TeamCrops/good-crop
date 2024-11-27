@@ -46,6 +46,9 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
+    // Chache
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+
     // Random string
     testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 
