@@ -1,4 +1,4 @@
-package com.crop.goodcrop.domain.trend.entity;
+package com.crop.goodcrop.domain.trend.entity.mysql;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -24,7 +24,6 @@ public class WebSecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
 
-
     //AuthenticationManager 빈 설정 (인증 처리)
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -58,6 +57,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth ->
                         // 회원가입,로그인
                         auth.requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers("/h2-console/**").permitAll()
                                 // 단일 상품 조회
                                 .requestMatchers("/api/products/{productId}").permitAll()
                                 // 상품검색
@@ -76,5 +76,4 @@ public class WebSecurityConfig {
 
         return http.build();
     }
-
 }

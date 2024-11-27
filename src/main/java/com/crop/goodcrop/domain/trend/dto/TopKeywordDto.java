@@ -1,12 +1,10 @@
 package com.crop.goodcrop.domain.trend.dto;
 
-import com.crop.goodcrop.domain.trend.entity.TopKeyword;
+import com.crop.goodcrop.domain.trend.entity.mysql.TopKeyword;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Builder
 @Getter

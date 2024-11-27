@@ -38,7 +38,7 @@ public class TrendControllerTest {
     @Test
     void modifyTopKeyword() throws Exception {
         // given
-        doNothing().when(trendService).modifyTopKeywordVersion1();
+        doNothing().when(trendService).modifyTopKeyword();
 
         // when & then
         mockMvc.perform(post("/api/v1/trends"))
@@ -53,7 +53,7 @@ public class TrendControllerTest {
                 TopKeywordDto.builder().keyword("고구마").count(30L).build(),
                 TopKeywordDto.builder().keyword("감자").count(10L).build()
         );
-        when(trendService.retrieveTopKeyword()).thenReturn(topKeywords);
+        when(trendService.retrieveTopKeywordVersion1()).thenReturn(topKeywords);
 
         // when & then
         mockMvc.perform(get("/api/trends"))

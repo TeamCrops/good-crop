@@ -15,24 +15,23 @@ import java.util.List;
 public class TrendController {
     private final TrendService trendService;
 
-    @GetMapping("/trends")
-    public ResponseEntity<List<TopKeywordDto>> retrieveTopKeyword() {
+    @GetMapping("/v1/trends")
+    public ResponseEntity<List<TopKeywordDto>> retrieveTopKeywordVersion1() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(trendService.retrieveTopKeyword());
+                .body(trendService.retrieveTopKeywordVersion1());
     }
 
-    @PostMapping("/v1/trends")
-    public ResponseEntity<Void> modifyTopKeywordVersion1() {
-        trendService.modifyTopKeywordVersion1();
+    @GetMapping("/v2/trends")
+    public ResponseEntity<List<TopKeywordDto>> retrieveTopKeywordVersion2() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .build();
+                .body(trendService.retrieveTopKeywordVersion2());
     }
 
-    @PostMapping("/v2/trends")
-    public ResponseEntity<Void> modifyTopKeywordVersion2() {
-        trendService.modifyTopKeywordVersion2();
+    @PostMapping("/trends")
+    public ResponseEntity<Void> modifyTopKeyword() {
+        trendService.modifyTopKeyword();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .build();
