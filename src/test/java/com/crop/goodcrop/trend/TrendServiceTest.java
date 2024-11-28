@@ -39,7 +39,7 @@ public class TrendServiceTest {
 
         // when
         TrendService service = new TrendService(searchHistoryRepository, h2SearchHistoryRepository, topKeywordRepository);
-        service.modifyTopKeyword();
+        service.modifyTopKeywordVersion1();
 
         // then
         verify(searchHistoryRepository, times(1)).findTopFiveOrderBySearchCount();

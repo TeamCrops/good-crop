@@ -26,6 +26,9 @@ import javax.sql.DataSource;
         transactionManagerRef = "h2TransactionManager"
 )
 public class H2Config {
+    public static final long MIGRATION_DURATION = 7200000L; // 2시간
+    public static final long MODIFY_DURATION = 30000L; // 5분
+
     @Primary
     @Bean(name = "h2DataSource")
     @ConfigurationProperties(prefix = "spring.datasource.h2")

@@ -29,9 +29,17 @@ public class TrendController {
                 .body(trendService.retrieveTopKeywordVersion2());
     }
 
-    @PostMapping("/trends")
-    public ResponseEntity<Void> modifyTopKeyword() {
-        trendService.modifyTopKeyword();
+    @PostMapping("/v1/trends")
+    public ResponseEntity<Void> modifyTopKeywordVersion1() {
+        trendService.modifyTopKeywordVersion1();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
+    }
+
+    @PostMapping("/v2/trends")
+    public ResponseEntity<Void> modifyTopKeywordVersion2() {
+        trendService.modifyTopKeywordVersion2();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .build();

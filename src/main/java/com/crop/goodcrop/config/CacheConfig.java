@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 @Configuration // 설정 클래스임을 명시
 @EnableCaching  // 캐시 기능 활성화
 public class CacheConfig {
-    public static final long DURATION = 300000L;
     public static final String PRODUCT = "product";
     public static final String TOP_KEYWORD = "searchHistory";
 

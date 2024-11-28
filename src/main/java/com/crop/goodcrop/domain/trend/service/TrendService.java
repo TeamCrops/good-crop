@@ -1,6 +1,7 @@
 package com.crop.goodcrop.domain.trend.service;
 
 import com.crop.goodcrop.config.CacheConfig;
+import com.crop.goodcrop.config.H2Config;
 import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
 import com.crop.goodcrop.domain.trend.entity.h2.H2SearchHistory;
 import com.crop.goodcrop.domain.trend.entity.mysql.SearchHistory;
@@ -37,17 +38,30 @@ public class TrendService {
     }
 
     @Transactional
-    public void modifyTopKeyword() {
-        List<TopKeyword> topKeywords = statisticsTopKeyword();
-        if(topKeywords.size() < TOP_KEYWORD_COUNT)
-            addTopKeyword(topKeywords);
+    public void modifyTopKeywordVersion1() {
+        List<TopKeywordDto> topKeywords = searchHistoryRepository.findTopFiveOrderBySearchCount();
         modifyTopKeyword(topKeywords);
     }
 
-    private List<TopKeyword> statisticsTopKeyword() {
-        List<TopKeywordDto> searchHistories = searchHistoryRepository.findTopFiveOrderBySearchCount();
+    @Transactional
+    // @Scheduled(fixedDelay = H2Config.MODIFY_DURATION)
+    public void modifyTopKeywordVersion2() {
+        List<TopKeywordDto> topKeywords = h2SearchHistoryRepository.findTopKeywordOrderBySearchCount();
+        modifyTopKeyword(topKeywords);
+    }
+
+    private void modifyTopKeyword(List<TopKeywordDto> topKeywords) {
+        List<TopKeyword> newTopKeywords = convertDtoToEntity(topKeywords);
+        if(newTopKeywords.size() < TOP_KEYWORD_COUNT)
+            addTopKeyword(newTopKeywords);
+
+        topKeywordRepository.deleteAll();
+        topKeywordRepository.saveAll(newTopKeywords);
+    }
+
+    private List<TopKeyword> convertDtoToEntity(List<TopKeywordDto> topKeywords) {
         List<TopKeyword> newTopKeywords = new ArrayList<>();
-        for (TopKeywordDto topKeywordDto : searchHistories) {
+        for (TopKeywordDto topKeywordDto : topKeywords) {
             TopKeyword topKeyword = topKeywordDto.convertDtoToEntity();
             newTopKeywords.add(topKeyword);
         }
@@ -73,12 +87,7 @@ public class TrendService {
         }
     }
 
-    private void modifyTopKeyword(List<TopKeyword> newTopKeywords) {
-        topKeywordRepository.deleteAll();
-        topKeywordRepository.saveAll(newTopKeywords);
-    }
-
-    @Scheduled(fixedDelay = CacheConfig.DURATION)
+    @Scheduled(fixedDelay = H2Config.MIGRATION_DURATION)
     public void migration() {
         List<H2SearchHistory> h2SearchHistories = h2SearchHistoryRepository.findAll();
         List<SearchHistory> searchHistories = h2SearchHistories.stream()
