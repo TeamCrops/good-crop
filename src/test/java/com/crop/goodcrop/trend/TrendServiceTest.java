@@ -4,7 +4,7 @@ import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
 import com.crop.goodcrop.domain.trend.entity.TopKeyword;
 import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
 import com.crop.goodcrop.domain.trend.repository.TopKeywordRepository;
-import com.crop.goodcrop.domain.trend.service.TrendService;
+import com.crop.goodcrop.domain.trend.service.TopKeywordService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,7 @@ public class TrendServiceTest {
 
     @Test
     @DisplayName("인기 검색어 갱신 성공")
-    void modifyTopKeyword_success() {
+    void modifyTopKeyword_Version1_success() {
         // given
         List<TopKeywordDto> searchHistories = List.of(new TopKeywordDto());
         List<TopKeyword> topKeywords = List.of(new TopKeyword());
@@ -34,8 +34,8 @@ public class TrendServiceTest {
         when(topKeywordRepository.saveAll(anyList())).thenReturn(topKeywords);
 
         // when
-        TrendService service = new TrendService(searchHistoryRepository, topKeywordRepository);
-        service.modifyTopKeyword();
+        TopKeywordService service = new TopKeywordService(searchHistoryRepository, topKeywordRepository);
+        service.refreshTopKeyword();
 
         // then
         verify(searchHistoryRepository, times(1)).findTopFiveOrderBySearchCount();
@@ -51,8 +51,8 @@ public class TrendServiceTest {
         when(topKeywordRepository.findAll()).thenReturn(topKeywords);
 
         // when
-        TrendService service = new TrendService(searchHistoryRepository, topKeywordRepository);
-        List<TopKeywordDto> results = service.retrieveTopKeyword();
+        TopKeywordService service = new TopKeywordService(searchHistoryRepository, topKeywordRepository);
+        List<TopKeywordDto> results = service.retrieveTopKeywordVersion1();
 
         // then
         verify(topKeywordRepository, times(1)).findAll();
