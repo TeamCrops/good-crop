@@ -56,6 +56,9 @@ dependencies {
 
     // H2 데이터베이스
     runtimeOnly 'com.h2database:h2'
+
+    // 직렬화 & 역직렬화
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 
 tasks.named('test') {

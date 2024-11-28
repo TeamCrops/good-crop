@@ -31,10 +31,10 @@ public class SearchHistoryController {
         return searchHistoryService.getAllCacheData();
     }
 
-//    // 캐시 비우기
-//    @PostMapping("/cache/search-history/clear")
-//    public String clearCache() {
-//        searchHistoryService.clearCache();
-//        return "캐시가 비워졌습니다.";
-//    }
+    // 캐시 비우기
+    @PostMapping("/cache/search-history/clear")
+    public String clearCache() {
+        searchHistoryService.clearCache();
+        return "캐시가 비워졌습니다.";
+    }
 }

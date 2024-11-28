@@ -12,19 +12,17 @@ import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
 import com.crop.goodcrop.exception.ErrorCode;
 import com.crop.goodcrop.exception.ResponseException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentMap;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +31,7 @@ public class ProductService {
     private final ReviewRepository reviewRepository;
     private final SearchHistoryRepository searchHistoryRepository;
     private final CacheManager cacheManager;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public ProductResponseDto retrieveProduct(Long productId) {
         Product product = productRepository.findById(productId)
@@ -85,53 +84,27 @@ public class ProductService {
     }
 
     public void putCacheSearchHistory(long memberId, String keyword) {
-        Cache cache = cacheManager.getCache(RedisConfig.SEARCH_HISTORY);
-        if(cache == null){
+        Map<Object, Object> searchHistories = redisTemplate.opsForHash().entries(RedisConfig.SEARCH_HISTORY);
+        if (checkAbusing(keyword, searchHistories))
             return;
-        }
-        List<SearchHistory> existingHistories = cache.get(memberId, List.class);
-        // 새로운 검색 기록 생성
+
         SearchHistory searchHistory = SearchHistory.builder()
                 .memberId(memberId)
                 .keyword(keyword)
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        if(existingHistories==null){
-            return;
-        }
-
-        existingHistories.add(searchHistory);
-
-        // Redis 캐시에 검색 기록 업데이트
-        cache.put(memberId, existingHistories);
-//        if (cache == null){
-//
-//            return;//put하는 로직 추가//캐시 매니저로
-//        }
-//
-//
-//        if (cache.getNativeCache() instanceof com.github.benmanes.caffeine.cache.Cache caffineCache) {
-//            if (checkAbusing(keyword, caffineCache.asMap()))
-//                return;
-//
-//            String key = memberId + "_" + LocalDateTime.now();
-//            SearchHistory searchHistory = SearchHistory.builder()
-//                    .memberId(memberId)
-//                    .keyword(keyword)
-//                    .createdAt(LocalDateTime.now())
-//                    .build();
-//            cache.put(key, searchHistory);
-//        }
+        String key = memberId + "_" + LocalDateTime.now();
+        redisTemplate.opsForHash().put(RedisConfig.SEARCH_HISTORY, key, searchHistory);
     }
 
-    private boolean checkAbusing(String keyword, ConcurrentMap<Long, SearchHistory> searchHistories) {
+    private boolean checkAbusing(String keyword, Map<Object, Object> searchHistories) {
         LocalDateTime checkDate = LocalDateTime.now().minusMinutes(1);
-        for (Map.Entry<Long, SearchHistory> entry : searchHistories.entrySet()) {
-            SearchHistory searchHistory = entry.getValue();
+        for (Object key : searchHistories.keySet()) {
+            SearchHistory searchHistory = (SearchHistory) searchHistories.get(key);
             if (searchHistory.getMemberId() != -1L &&
-                searchHistory.getKeyword().equals(keyword) &&
-                checkDate.isBefore(searchHistory.getCreatedAt()))
+                    searchHistory.getKeyword().equals(keyword) &&
+                    checkDate.isBefore(searchHistory.getCreatedAt()))
                 return true;
         }
         return false;

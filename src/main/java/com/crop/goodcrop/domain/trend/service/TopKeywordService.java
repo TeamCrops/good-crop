@@ -29,7 +29,7 @@ public class TopKeywordService {
         return topKeywords.stream().map(TopKeywordDto::from).toList();
     }
 
-    @Cacheable(value = RedisConfig.TOP_KEYWORD)
+    @Cacheable(value = RedisConfig.TOP_KEYWORD, key = "#memberId + '_' + #createdAt")
     public List<TopKeywordDto> retrieveTopKeywordVersion2() {
         List<TopKeyword> topKeywords = topKeywordRepository.findAll();
         return topKeywords.stream().map(TopKeywordDto::from).toList();
@@ -62,7 +62,11 @@ public class TopKeywordService {
 
     private void addTopKeyword(List<TopKeyword> newTopKeywords) {
         List<TopKeyword> topKeywords = topKeywordRepository.findAll();
-        for (int idx = 0; idx < TOP_KEYWORD_COUNT - newTopKeywords.size(); idx++) {
+        if(topKeywords.isEmpty())
+            return;
+
+        int maxCount = Math.min(topKeywords.size(), TOP_KEYWORD_COUNT);
+        for (int idx = 0; idx < maxCount; idx++) {
             boolean isSame = false;
             for(TopKeyword topKeyword : topKeywords) {
                 if(topKeyword.getKeyword().equals(newTopKeywords.get(idx).getKeyword())) {
