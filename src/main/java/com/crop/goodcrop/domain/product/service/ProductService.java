@@ -48,11 +48,11 @@ public class ProductService {
                 avgScore);
     }
 
-    public PageResponseDto<ProductResponseDto> searchProducts(String keyword, int minPrice, boolean isTrend, int page, int size) {
+    public PageResponseDto<ProductResponseDto> searchProducts(Long memberId, String keyword, int minPrice, boolean isTrend, int page, int size) {
         // === ver1 직접 SearchHistory 테이블에 Insert ===
         // createSearchHistory(null, keyword);
         // === ver2 in-memory에 올린다. ===
-        putCacheSearchHistory(1, keyword);
+        putCacheSearchHistory(memberId, keyword);
         // ===============================
 
         Pageable pageable = PageRequest.of(page - 1, size);
@@ -130,7 +130,8 @@ public class ProductService {
         LocalDateTime checkDate = LocalDateTime.now().minusMinutes(1);
         for (Map.Entry<Long, SearchHistory> entry : searchHistories.entrySet()) {
             SearchHistory searchHistory = entry.getValue();
-            if (searchHistory.getKeyword().equals(keyword) &&
+            if (searchHistory.getMemberId() != -1L &&
+                searchHistory.getKeyword().equals(keyword) &&
                 checkDate.isBefore(searchHistory.getCreatedAt()))
                 return true;
         }
