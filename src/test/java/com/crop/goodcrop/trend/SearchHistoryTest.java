@@ -1,8 +1,8 @@
 package com.crop.goodcrop.trend;
 
 import com.crop.goodcrop.config.CacheConfig;
-import com.crop.goodcrop.domain.trend.entity.SearchHistory;
-import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
+import com.crop.goodcrop.domain.trend.entity.mysql.SearchHistory;
+import com.crop.goodcrop.domain.trend.repository.mysql.SearchHistoryRepository;
 import com.crop.goodcrop.domain.trend.service.SearchHistoryService;
 import com.crop.goodcrop.domain.trend.service.WriteBackService;
 import org.junit.jupiter.api.Test;
@@ -10,11 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.caffeine.CaffeineCache;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.util.AssertionErrors.assertEquals;

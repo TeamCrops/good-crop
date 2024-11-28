@@ -1,20 +1,26 @@
 package com.crop.goodcrop.domain.product.service;
 
+import com.crop.goodcrop.config.CacheConfig;
 import com.crop.goodcrop.domain.common.dto.PageResponseDto;
 import com.crop.goodcrop.domain.product.dto.response.ProductAvgScoreDto;
 import com.crop.goodcrop.domain.product.dto.response.ProductResponseDto;
 import com.crop.goodcrop.domain.product.entity.Product;
 import com.crop.goodcrop.domain.product.repository.ProductRepository;
 import com.crop.goodcrop.domain.review.repository.ReviewRepository;
-import com.crop.goodcrop.domain.trend.entity.SearchHistory;
-import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
+import com.crop.goodcrop.domain.trend.entity.h2.H2SearchHistory;
+import com.crop.goodcrop.domain.trend.entity.mysql.SearchHistory;
+import com.crop.goodcrop.domain.trend.repository.h2.H2SearchHistoryRepository;
+import com.crop.goodcrop.domain.trend.repository.mysql.SearchHistoryRepository;
 import com.crop.goodcrop.exception.ErrorCode;
 import com.crop.goodcrop.exception.ResponseException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +32,7 @@ public class ProductService {
     private final ReviewRepository reviewRepository;
     private final SearchHistoryRepository searchHistoryRepository;
     private final H2SearchHistoryRepository h2SearchHistoryRepository;
+    private final CacheManager cacheManager;
 
     public ProductResponseDto retrieveProduct(Long productId) {
         Product product = productRepository.findById(productId)
@@ -40,13 +47,8 @@ public class ProductService {
                 avgScore);
     }
 
+    @Transactional
     public PageResponseDto<ProductResponseDto> searchProducts(String keyword, int minPrice, boolean isTrend, int page, int size) {
-        // === ver1 직접 SearchHistory 테이블에 Insert ===
-        createSearchHistory(null, keyword);
-        // === ver2 in-memory에 올린다. ===
-        createH2SearchHistory(null, keyword);
-        // =============================================
-
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Product> products = productRepository.searchProductsWithFilters(keyword, minPrice, isTrend, pageable)
                 .orElseThrow(() -> new ResponseException(ErrorCode.PRODUCT_SEARCH_NOT_FOUND));
@@ -72,9 +74,24 @@ public class ProductService {
                     );
                 }).toList();
 
+        // === ver1 직접 SearchHistory 테이블에 Insert ===
+        // createSearchHistory(null, keyword);
+        // === ver2 in-memory에 올린다. ===
+        putCacheSearchHistory(null, keyword);
+        // === ver3 버려진 H2 ===
+        // createH2SearchHistory(null, keyword);
+        // =============================================
+
         return PageResponseDto.of(
                 respDtos, pageable, products.getTotalPages()
         );
+    }
+
+    public void putCacheSearchHistory(Long memberId, String keyword) {
+        Cache cache = cacheManager.getCache(CacheConfig.SEARCH_HISTORY);
+        if(cache!=null){
+            cache.put(memberId, keyword);
+        }
     }
 
     private void createSearchHistory(Long memberId, String keyword) {

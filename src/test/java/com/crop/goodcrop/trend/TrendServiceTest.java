@@ -1,10 +1,10 @@
 package com.crop.goodcrop.trend;
 
 import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
-import com.crop.goodcrop.domain.trend.entity.TopKeyword;
-import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
-import com.crop.goodcrop.domain.trend.repository.TopKeywordRepository;
+import com.crop.goodcrop.domain.trend.entity.mysql.TopKeyword;
 import com.crop.goodcrop.domain.trend.repository.h2.H2SearchHistoryRepository;
+import com.crop.goodcrop.domain.trend.repository.mysql.SearchHistoryRepository;
+import com.crop.goodcrop.domain.trend.repository.mysql.TopKeywordRepository;
 import com.crop.goodcrop.domain.trend.service.TrendService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

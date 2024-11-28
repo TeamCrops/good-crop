@@ -1,20 +1,18 @@
 package com.crop.goodcrop.domain.trend.service;
 
 import com.crop.goodcrop.config.CacheConfig;
-import com.crop.goodcrop.domain.trend.entity.SearchHistory;
-import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
+import com.crop.goodcrop.domain.trend.entity.mysql.SearchHistory;
+import com.crop.goodcrop.domain.trend.repository.mysql.SearchHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCache;
-import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
 
 @Service
 @RequiredArgsConstructor
