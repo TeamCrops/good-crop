@@ -47,6 +47,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if (url.startsWith("/api/auth") || //회원가입,로그인
                 (url.matches("/api/products/\\d+") && "GET".equals(method)) || //단일 상품 조회
                 url.startsWith("/api/v1/products") || //상품검색
+                url.startsWith("/api/v2/products") || //상품검색
                 url.startsWith("/api/trends") || //인기 검색어
                 url.startsWith("/api/v1/trends") || //인기 검색어
                 url.startsWith("/api/v2/trends") || //인기 검색어
