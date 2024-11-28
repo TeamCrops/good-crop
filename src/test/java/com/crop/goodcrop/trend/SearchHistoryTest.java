@@ -1,6 +1,6 @@
 package com.crop.goodcrop.trend;
 
-import com.crop.goodcrop.config.CaffeineCacheConfig;
+import com.crop.goodcrop.config.RedisConfig;
 import com.crop.goodcrop.domain.trend.entity.SearchHistory;
 import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
 import com.crop.goodcrop.domain.trend.service.SearchHistoryService;
@@ -36,7 +36,7 @@ public class SearchHistoryTest {
         searchHistoryService.putCacheData(3L, "keyword3");
 
         // 2. 캐시에 로그 저장 확인
-        Cache cache = cacheManager.getCache(CaffeineCacheConfig.SEARCH_HISTORY);
+        Cache cache = cacheManager.getCache(RedisConfig.SEARCH_HISTORY);
         List<String> keywordsFromCache1 = cache.get(1L, ArrayList::new);
         List<String> keywordsFromCache2 = cache.get(2L, ArrayList::new);
         List<String> keywordsFromCache3 = cache.get(3L, ArrayList::new);
