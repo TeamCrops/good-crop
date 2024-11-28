@@ -1,6 +1,6 @@
 package com.crop.goodcrop.domain.trend.service;
 
-import com.crop.goodcrop.config.CacheConfig;
+import com.crop.goodcrop.config.RedisConfig;
 import com.crop.goodcrop.domain.trend.entity.SearchHistory;
 import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class SearchHistoryService {
     private final SearchHistoryRepository searchHistoryRepository;
 
     public void putCacheData(Long memberId, String keyword) {
-        Cache cache = cacheManager.getCache(CacheConfig.SEARCH_HISTORY);
+        Cache cache = cacheManager.getCache(RedisConfig.SEARCH_HISTORY);
         if(cache!=null){
             List<String> keywords = cache.get(memberId, ArrayList::new);
             keywords.add(keyword);
@@ -36,7 +36,7 @@ public class SearchHistoryService {
     @Transactional
     public void writeBack(){
         // Caffeine 캐시에서 캐시를 가져오기
-        CaffeineCache cache = (CaffeineCache) cacheManager.getCache(CacheConfig.SEARCH_HISTORY);
+        Cache cache = cacheManager.getCache(RedisConfig.SEARCH_HISTORY);
         if (cache != null) {
             // CaffeineCache에서 asMap() 메서드로 데이터를 Map 형태로 가져오기
             Map<Object, Object> cacheMap = cache.getNativeCache().asMap();
@@ -56,7 +56,7 @@ public class SearchHistoryService {
     }
 
     public Map<Object, Object> getAllCacheData() {
-        Cache cache = cacheManager.getCache(CacheConfig.SEARCH_HISTORY);
+        Cache cache = cacheManager.getCache(RedisConfig.SEARCH_HISTORY);
         if (cache == null) {
             return new HashMap<>(); // 캐시가 없을 경우 빈 Map 반환
         }
@@ -71,7 +71,7 @@ public class SearchHistoryService {
 
     // 캐시 비우기
     public void clearCache() {
-        Cache cache = cacheManager.getCache(CacheConfig.SEARCH_HISTORY);
+        Cache cache = cacheManager.getCache(RedisConfig.SEARCH_HISTORY);
         if (cache != null) {
             cache.clear();  // 캐시 비우기
         }

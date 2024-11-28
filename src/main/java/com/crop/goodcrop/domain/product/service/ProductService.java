@@ -1,6 +1,6 @@
 package com.crop.goodcrop.domain.product.service;
 
-import com.crop.goodcrop.config.CacheConfig;
+import com.crop.goodcrop.config.RedisConfig;
 import com.crop.goodcrop.domain.common.dto.PageResponseDto;
 import com.crop.goodcrop.domain.product.dto.response.ProductAvgScoreDto;
 import com.crop.goodcrop.domain.product.dto.response.ProductResponseDto;
@@ -84,7 +84,7 @@ public class ProductService {
     }
 
     public void putCacheSearchHistory(long memberId, String keyword) {
-        Cache cache = cacheManager.getCache(CacheConfig.SEARCH_HISTORY);
+        Cache cache = cacheManager.getCache(RedisConfig.SEARCH_HISTORY);
         if (cache == null)
             return;
 
