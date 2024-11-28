@@ -84,7 +84,7 @@ public class ProductService {
 
 
     //상품검색 캐시 적용
-    @Cacheable(value = "searchProductsCache", key = "#keyword + '_' + #minPrice + '_' + #isTrend + '_' + #page + '_' + #size", condition = "#existWord")
+    @Cacheable(value = "searchProductsRedis", key = "#keyword + '_' + #minPrice + '_' + #isTrend + '_' + #page + '_' + #size", condition = "#existWord")
     public PageResponseDto<ProductResponseDto> searchProductsWithCache(String keyword, int minPrice, boolean isTrend, boolean existWord, int page, int size) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
