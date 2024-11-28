@@ -51,6 +51,13 @@ dependencies {
 
     // H2 데이터베이스
     runtimeOnly 'com.h2database:h2'
+
+    //캐시
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    //implementation 'com.github.ben-manes.caffeine:caffeine' //카페인
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis' // redis
+
 }
 
 tasks.named('test') {
