@@ -54,9 +54,6 @@ public class SearchHistoryService {
 
     // 캐시 비우기
     public void clearCache() {
-        Cache cache = cacheManager.getCache(RedisConfig.SEARCH_HISTORY);
-        if (cache != null) {
-            cache.clear();  // 캐시 비우기
-        }
+        redisTemplate.delete(RedisConfig.SEARCH_HISTORY);
     }
 }

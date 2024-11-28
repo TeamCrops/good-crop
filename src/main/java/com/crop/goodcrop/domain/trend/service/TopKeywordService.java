@@ -6,9 +6,8 @@ import com.crop.goodcrop.domain.trend.entity.TopKeyword;
 import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
 import com.crop.goodcrop.domain.trend.repository.TopKeywordRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TopKeywordService {
     private final int TOP_KEYWORD_COUNT = 5;
-    private final CacheManager cacheManager;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final SearchHistoryRepository searchHistoryRepository;
     private final TopKeywordRepository topKeywordRepository;
 
@@ -84,9 +83,6 @@ public class TopKeywordService {
     }
 
     public void clearCache() {
-        Cache cache = cacheManager.getCache(RedisConfig.TOP_KEYWORD);
-        if (cache != null) {
-            cache.clear();  // 캐시 비우기
-        }
+        redisTemplate.delete(RedisConfig.TOP_KEYWORD);
     }
 }

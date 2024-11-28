@@ -12,7 +12,6 @@ import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
 import com.crop.goodcrop.exception.ErrorCode;
 import com.crop.goodcrop.exception.ResponseException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +29,6 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
     private final SearchHistoryRepository searchHistoryRepository;
-    private final CacheManager cacheManager;
     private final RedisTemplate<String, Object> redisTemplate;
 
     public ProductResponseDto retrieveProduct(Long productId) {
@@ -84,7 +82,9 @@ public class ProductService {
     }
 
     public void putCacheSearchHistory(long memberId, String keyword) {
-        Map<Object, Object> searchHistories = redisTemplate.opsForHash().entries(RedisConfig.SEARCH_HISTORY);
+        Map<Object, Object> searchHistories = redisTemplate
+                .opsForHash()
+                .entries(RedisConfig.SEARCH_HISTORY);
         if (checkAbusing(keyword, searchHistories))
             return;
 
