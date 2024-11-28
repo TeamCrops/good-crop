@@ -4,10 +4,7 @@ import com.crop.goodcrop.config.RedisConfig;
 import com.crop.goodcrop.domain.trend.entity.SearchHistory;
 import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +16,6 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class SearchHistoryService {
-    private final CacheManager cacheManager;
     private final SearchHistoryRepository searchHistoryRepository;
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -33,7 +29,7 @@ public class SearchHistoryService {
         redisTemplate.opsForHash().put(RedisConfig.SEARCH_HISTORY, key, searchHistory);
     }
 
-    @Scheduled(fixedRate = 300000)
+    // @Scheduled(fixedRate = 300000)
     // @Scheduled(fixedRate = 1000 * 30) // 30초
     @Transactional
     public void writeBack() {

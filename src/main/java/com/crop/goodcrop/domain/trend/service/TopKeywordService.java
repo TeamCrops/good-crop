@@ -8,7 +8,6 @@ import com.crop.goodcrop.domain.trend.repository.TopKeywordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +34,7 @@ public class TopKeywordService {
     }
 
     @Transactional
-    @Scheduled(fixedRate = 120000) // 2시간
+    // @Scheduled(fixedRate = 120000) // 2시간
     // @Scheduled(fixedRate = 1000 * 30) // 30초
     public void refreshTopKeyword() {
         List<TopKeywordDto> topKeywords = searchHistoryRepository.findTopFiveOrderBySearchCount();
