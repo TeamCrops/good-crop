@@ -1,8 +1,8 @@
-package com.crop.goodcrop.domain.trend.repository.mysql;
+package com.crop.goodcrop.domain.trend.repository;
 
 import com.crop.goodcrop.domain.trend.dto.QTopKeywordDto;
 import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
-import com.crop.goodcrop.domain.trend.entity.mysql.QSearchHistory;
+import com.crop.goodcrop.domain.trend.entity.QSearchHistory;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;

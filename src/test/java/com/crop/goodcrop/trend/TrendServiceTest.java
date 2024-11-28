@@ -1,11 +1,10 @@
 package com.crop.goodcrop.trend;
 
 import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
-import com.crop.goodcrop.domain.trend.entity.mysql.TopKeyword;
-import com.crop.goodcrop.domain.trend.repository.h2.H2SearchHistoryRepository;
-import com.crop.goodcrop.domain.trend.repository.mysql.SearchHistoryRepository;
-import com.crop.goodcrop.domain.trend.repository.mysql.TopKeywordRepository;
-import com.crop.goodcrop.domain.trend.service.TrendService;
+import com.crop.goodcrop.domain.trend.entity.TopKeyword;
+import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
+import com.crop.goodcrop.domain.trend.repository.TopKeywordRepository;
+import com.crop.goodcrop.domain.trend.service.TopKeywordService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,9 +24,6 @@ public class TrendServiceTest {
     @Mock
     SearchHistoryRepository searchHistoryRepository;
 
-    @Mock
-    H2SearchHistoryRepository h2SearchHistoryRepository;
-
     @Test
     @DisplayName("인기 검색어 갱신 성공")
     void modifyTopKeyword_Version1_success() {
@@ -38,8 +34,8 @@ public class TrendServiceTest {
         when(topKeywordRepository.saveAll(anyList())).thenReturn(topKeywords);
 
         // when
-        TrendService service = new TrendService(searchHistoryRepository, h2SearchHistoryRepository, topKeywordRepository);
-        service.modifyTopKeywordVersion1();
+        TopKeywordService service = new TopKeywordService(searchHistoryRepository, topKeywordRepository);
+        service.refreshTopKeyword();
 
         // then
         verify(searchHistoryRepository, times(1)).findTopFiveOrderBySearchCount();
@@ -55,7 +51,7 @@ public class TrendServiceTest {
         when(topKeywordRepository.findAll()).thenReturn(topKeywords);
 
         // when
-        TrendService service = new TrendService(searchHistoryRepository, h2SearchHistoryRepository, topKeywordRepository);
+        TopKeywordService service = new TopKeywordService(searchHistoryRepository, topKeywordRepository);
         List<TopKeywordDto> results = service.retrieveTopKeywordVersion1();
 
         // then

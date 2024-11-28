@@ -7,10 +7,8 @@ import com.crop.goodcrop.domain.product.dto.response.ProductResponseDto;
 import com.crop.goodcrop.domain.product.entity.Product;
 import com.crop.goodcrop.domain.product.repository.ProductRepository;
 import com.crop.goodcrop.domain.review.repository.ReviewRepository;
-import com.crop.goodcrop.domain.trend.entity.h2.H2SearchHistory;
-import com.crop.goodcrop.domain.trend.entity.mysql.SearchHistory;
-import com.crop.goodcrop.domain.trend.repository.h2.H2SearchHistoryRepository;
-import com.crop.goodcrop.domain.trend.repository.mysql.SearchHistoryRepository;
+import com.crop.goodcrop.domain.trend.entity.SearchHistory;
+import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
 import com.crop.goodcrop.exception.ErrorCode;
 import com.crop.goodcrop.exception.ResponseException;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,7 +31,6 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
     private final SearchHistoryRepository searchHistoryRepository;
-    private final H2SearchHistoryRepository h2SearchHistoryRepository;
     private final CacheManager cacheManager;
 
     public ProductResponseDto retrieveProduct(Long productId) {
@@ -56,9 +51,7 @@ public class ProductService {
         // createSearchHistory(null, keyword);
         // === ver2 in-memory에 올린다. ===
         putCacheSearchHistory(1, keyword);
-        // === ver3 버려진 H2 ===
-        // createH2SearchHistory(null, keyword);
-        // =============================================
+        // ===============================
 
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Product> products = productRepository.searchProductsWithFilters(keyword, minPrice, isTrend, pageable)
@@ -92,11 +85,11 @@ public class ProductService {
 
     public void putCacheSearchHistory(long memberId, String keyword) {
         Cache cache = cacheManager.getCache(CacheConfig.SEARCH_HISTORY);
-        if(cache == null)
+        if (cache == null)
             return;
 
         if (cache.getNativeCache() instanceof com.github.benmanes.caffeine.cache.Cache caffineCache) {
-            if(checkAbusing(caffineCache.asMap()))
+            if (checkAbusing(caffineCache.asMap()))
                 return;
 
             String key = memberId + "_" + LocalDateTime.now();
@@ -111,9 +104,9 @@ public class ProductService {
 
     private boolean checkAbusing(ConcurrentMap<Long, SearchHistory> searchHistories) {
         LocalDateTime checkDate = LocalDateTime.now().minusMinutes(1);
-        for(Map.Entry<Long, SearchHistory> entry : searchHistories.entrySet()) {
+        for (Map.Entry<Long, SearchHistory> entry : searchHistories.entrySet()) {
             SearchHistory searchHistory = entry.getValue();
-            if(checkDate.isBefore(searchHistory.getCreatedAt()))
+            if (checkDate.isBefore(searchHistory.getCreatedAt()))
                 return true;
         }
         return false;
@@ -125,13 +118,5 @@ public class ProductService {
                 .keyword(keyword)
                 .build();
         searchHistoryRepository.save(searchHistory);
-    }
-
-    private void createH2SearchHistory(Long memberId, String keyword) {
-        H2SearchHistory searchHistory = H2SearchHistory.builder()
-                .memberId(memberId)
-                .keyword(keyword)
-                .build();
-        h2SearchHistoryRepository.save(searchHistory);
     }
 }

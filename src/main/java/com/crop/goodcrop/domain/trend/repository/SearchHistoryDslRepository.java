@@ -1,4 +1,4 @@
-package com.crop.goodcrop.domain.trend.repository.mysql;
+package com.crop.goodcrop.domain.trend.repository;
 
 import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
 

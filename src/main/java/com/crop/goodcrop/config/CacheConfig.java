@@ -35,7 +35,7 @@ public class CacheConfig {
     @Bean
     public Cache<Object, Object> searchHistoryCache() {
         return Caffeine.newBuilder()
-                .expireAfterWrite(5, TimeUnit.MINUTES)
+                .expireAfterWrite(2, TimeUnit.HOURS)
                 .maximumSize(1000)
                 .build();
     }

@@ -2,10 +2,9 @@ package com.crop.goodcrop.domain.trend.service;
 
 import com.crop.goodcrop.config.CacheConfig;
 import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
-import com.crop.goodcrop.domain.trend.entity.mysql.TopKeyword;
-import com.crop.goodcrop.domain.trend.repository.h2.H2SearchHistoryRepository;
-import com.crop.goodcrop.domain.trend.repository.mysql.SearchHistoryRepository;
-import com.crop.goodcrop.domain.trend.repository.mysql.TopKeywordRepository;
+import com.crop.goodcrop.domain.trend.entity.TopKeyword;
+import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
+import com.crop.goodcrop.domain.trend.repository.TopKeywordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -16,10 +15,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TrendService {
+public class TopKeywordService {
     private final int TOP_KEYWORD_COUNT = 5;
     private final SearchHistoryRepository searchHistoryRepository;
-    private final H2SearchHistoryRepository h2SearchHistoryRepository;
     private final TopKeywordRepository topKeywordRepository;
 
     public List<TopKeywordDto> retrieveTopKeywordVersion1() {
@@ -34,19 +32,8 @@ public class TrendService {
     }
 
     @Transactional
-    public void modifyTopKeywordVersion1() {
+    public void refreshTopKeyword() {
         List<TopKeywordDto> topKeywords = searchHistoryRepository.findTopFiveOrderBySearchCount();
-        modifyTopKeyword(topKeywords);
-    }
-
-    @Transactional
-    // @Scheduled(fixedDelay = H2Config.MODIFY_DURATION)
-    public void modifyTopKeywordVersion2() {
-        List<TopKeywordDto> topKeywords = h2SearchHistoryRepository.findTopKeywordOrderBySearchCount();
-        modifyTopKeyword(topKeywords);
-    }
-
-    private void modifyTopKeyword(List<TopKeywordDto> topKeywords) {
         List<TopKeyword> newTopKeywords = convertDtoToEntity(topKeywords);
         if(newTopKeywords.size() < TOP_KEYWORD_COUNT)
             addTopKeyword(newTopKeywords);
@@ -82,20 +69,4 @@ public class TrendService {
                 break;
         }
     }
-
-//    @Scheduled(fixedDelay = H2Config.MIGRATION_DURATION)
-//    public void migration() {
-//        List<H2SearchHistory> h2SearchHistories = h2SearchHistoryRepository.findAll();
-//        List<SearchHistory> searchHistories = h2SearchHistories.stream()
-//                .map(item -> {
-//                    return SearchHistory.builder()
-//                            .id(item.getId())
-//                            .keyword(item.getKeyword())
-//                            .memberId(item.getMemberId())
-//                            .createdAt(item.getCreatedAt())
-//                            .build();
-//                }).toList();
-//        searchHistoryRepository.saveAll(searchHistories);
-//        h2SearchHistoryRepository.deleteAll();
-//    }
 }

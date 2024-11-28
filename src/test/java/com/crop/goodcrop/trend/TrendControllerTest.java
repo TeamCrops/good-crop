@@ -1,8 +1,8 @@
 package com.crop.goodcrop.trend;
 
-import com.crop.goodcrop.domain.trend.controller.TrendController;
+import com.crop.goodcrop.domain.trend.controller.SearchHistoryController;
 import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
-import com.crop.goodcrop.domain.trend.service.TrendService;
+import com.crop.goodcrop.domain.trend.service.TopKeywordService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,10 +23,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 public class TrendControllerTest {
     @InjectMocks
-    private TrendController trendController;
+    private SearchHistoryController trendController;
 
     @Mock
-    private TrendService trendService;
+    private TopKeywordService topKeywordService;
 
     private MockMvc mockMvc;
 
@@ -36,9 +36,9 @@ public class TrendControllerTest {
     }
 
     @Test
-    void modifyTopKeyword() throws Exception {
+    void refreshTopKeyword() throws Exception {
         // given
-        doNothing().when(trendService).modifyTopKeywordVersion1();
+        doNothing().when(topKeywordService).refreshTopKeyword();
 
         // when & then
         mockMvc.perform(post("/api/v1/trends"))
@@ -53,7 +53,7 @@ public class TrendControllerTest {
                 TopKeywordDto.builder().keyword("고구마").count(30L).build(),
                 TopKeywordDto.builder().keyword("감자").count(10L).build()
         );
-        when(trendService.retrieveTopKeywordVersion1()).thenReturn(topKeywords);
+        when(topKeywordService.retrieveTopKeywordVersion1()).thenReturn(topKeywords);
 
         // when & then
         mockMvc.perform(get("/api/trends"))

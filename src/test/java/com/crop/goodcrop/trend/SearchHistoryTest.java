@@ -1,10 +1,9 @@
 package com.crop.goodcrop.trend;
 
 import com.crop.goodcrop.config.CacheConfig;
-import com.crop.goodcrop.domain.trend.entity.mysql.SearchHistory;
-import com.crop.goodcrop.domain.trend.repository.mysql.SearchHistoryRepository;
+import com.crop.goodcrop.domain.trend.entity.SearchHistory;
+import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
 import com.crop.goodcrop.domain.trend.service.SearchHistoryService;
-import com.crop.goodcrop.domain.trend.service.WriteBackService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,10 +19,7 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 @SpringBootTest
 public class SearchHistoryTest {
     @Autowired
-    private SearchHistoryService searchLogService;
-
-    @Autowired
-    private WriteBackService writeBackService;
+    private SearchHistoryService searchHistoryService;
 
     @Autowired
     private SearchHistoryRepository searchHistoryRepository;
@@ -34,10 +30,10 @@ public class SearchHistoryTest {
     @Test
     void testSearchLogWriteBack() {
         searchHistoryRepository.deleteAll();
-        // 1. 검색 로그 저장
-        searchLogService.logSearch(1L, "keyword1");
-        searchLogService.logSearch(2L, "keyword2");
-        searchLogService.logSearch(3L, "keyword3");
+        // 1. 검색 로그 캐쉬에 저장
+        searchHistoryService.putCacheData(1L, "keyword1");
+        searchHistoryService.putCacheData(2L, "keyword2");
+        searchHistoryService.putCacheData(3L, "keyword3");
 
         // 2. 캐시에 로그 저장 확인
         Cache cache = cacheManager.getCache(CacheConfig.SEARCH_HISTORY);
@@ -52,7 +48,7 @@ public class SearchHistoryTest {
 
         // 4. DB에 한 번에 insert
         // 5분 후 writeBack 실행 예정
-        writeBackService.writeBackLogs();
+        searchHistoryService.writeBack();
 
         // 5. DB에 저장 확인
         List<SearchHistory> logs = searchHistoryRepository.findAll();
