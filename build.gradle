@@ -46,18 +46,19 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
+    // Cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // Random string
     testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 
     // H2 데이터베이스
     runtimeOnly 'com.h2database:h2'
 
-    //캐시
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
-    //implementation 'com.github.ben-manes.caffeine:caffeine' //카페인
-
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis' // redis
-
+    // 직렬화 & 역직렬화
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 
 tasks.named('test') {
@@ -74,7 +75,7 @@ tasks.withType(JavaCompile) {
 
 // java source set 에 querydsl QClass 위치 추가
 sourceSets {
-    main.java.srcDirs += [ generated ]
+    main.java.srcDirs += [generated]
 }
 
 // gradle clean 시에 QClass 디렉토리 삭제

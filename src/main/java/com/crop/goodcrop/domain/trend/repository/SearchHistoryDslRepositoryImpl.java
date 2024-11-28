@@ -32,7 +32,7 @@ public class SearchHistoryDslRepositoryImpl implements SearchHistoryDslRepositor
                 .groupBy(searchHistory.keyword)
                 .orderBy(aliasSearchCount.desc(),
                         searchHistory.createdAt.max().desc())
-                .limit(10)
+                .limit(5)
                 .fetch();
     }
 

@@ -24,12 +24,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final ObjectMapper objectMapper = new ObjectMapper();
-
 
     // AuthenticationManager 빈 설정 (인증 처리)
     @Bean
@@ -72,6 +70,9 @@ public class WebSecurityConfig {
                                 // 인기 검색어
                                 .requestMatchers("/api/trends").permitAll()
                                 .requestMatchers("/api/v1/trends").permitAll()
+                                .requestMatchers("/api/v2/trends").permitAll()
+                                // 캐싱처리
+                                .requestMatchers("/api/cache/**").permitAll()
                                 // 리뷰보기
                                 .requestMatchers(HttpMethod.GET, "/api/products/{productId}/reviews").permitAll()
                                 .anyRequest().authenticated() // 그 외 모든 요청 인증처리
@@ -93,5 +94,4 @@ public class WebSecurityConfig {
 
         return http.build();
     }
-
 }
