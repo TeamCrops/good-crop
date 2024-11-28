@@ -1,6 +1,7 @@
 package com.crop.goodcrop.domain.trend.service;
 
-import com.crop.goodcrop.config.CacheConfig;
+
+import com.crop.goodcrop.config.RedisConfig;
 import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
 import com.crop.goodcrop.domain.trend.entity.TopKeyword;
 import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
@@ -29,7 +30,7 @@ public class TopKeywordService {
         return topKeywords.stream().map(TopKeywordDto::from).toList();
     }
 
-    @Cacheable(value = CacheConfig.TOP_KEYWORD)
+    @Cacheable(value = RedisConfig.TOP_KEYWORD)
     public List<TopKeywordDto> retrieveTopKeywordVersion2() {
         List<TopKeyword> topKeywords = topKeywordRepository.findAll();
         return topKeywords.stream().map(TopKeywordDto::from).toList();
@@ -80,7 +81,7 @@ public class TopKeywordService {
     }
 
     public void clearCache() {
-        Cache cache = cacheManager.getCache(CacheConfig.TOP_KEYWORD);
+        Cache cache = cacheManager.getCache(RedisConfig.TOP_KEYWORD);
         if (cache != null) {
             cache.clear();  // 캐시 비우기
         }

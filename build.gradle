@@ -49,6 +49,7 @@ dependencies {
     // Cache
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'com.github.ben-manes.caffeine:caffeine'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     // Random string
     testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
