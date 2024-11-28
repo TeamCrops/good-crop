@@ -21,7 +21,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TrendService {
-    private final int TOP_KEYWORD_COUNT = 10;
+    private final int TOP_KEYWORD_COUNT = 5;
     private final SearchHistoryRepository searchHistoryRepository;
     private final H2SearchHistoryRepository h2SearchHistoryRepository;
     private final TopKeywordRepository topKeywordRepository;
@@ -100,5 +100,6 @@ public class TrendService {
                             .build();
                 }).toList();
         searchHistoryRepository.saveAll(searchHistories);
+        h2SearchHistoryRepository.deleteAll();
     }
 }

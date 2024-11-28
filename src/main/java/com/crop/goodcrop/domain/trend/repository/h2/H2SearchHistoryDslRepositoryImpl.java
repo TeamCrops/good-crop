@@ -1,6 +1,5 @@
 package com.crop.goodcrop.domain.trend.repository.h2;
 
-import com.crop.goodcrop.config.H2Config;
 import com.crop.goodcrop.domain.trend.dto.QTopKeywordDto;
 import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
 import com.crop.goodcrop.domain.trend.entity.h2.QH2SearchHistory;
@@ -33,7 +32,7 @@ public class H2SearchHistoryDslRepositoryImpl implements H2SearchHistoryDslRepos
                 .groupBy(h2SearchHistory.keyword)
                 .orderBy(aliasSearchCount.desc(),
                         h2SearchHistory.createdAt.max().desc())
-                .limit(10)
+                .limit(5)
                 .fetch();
     }
 
