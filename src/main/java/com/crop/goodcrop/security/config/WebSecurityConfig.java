@@ -66,6 +66,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/trends").permitAll()
                                 .requestMatchers("/api/v1/trends").permitAll()
                                 .requestMatchers("/api/v2/trends").permitAll()
+                                .requestMatchers("/api/v3/trends").permitAll()
                                 // 리뷰보기
                                 .requestMatchers(HttpMethod.GET, "/api/products/{productId}/reviews").permitAll()
                                 .anyRequest().authenticated() //그 외 모든 요청 인증처리

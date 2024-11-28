@@ -22,7 +22,7 @@ public class TrendController {
                 .body(trendService.retrieveTopKeywordVersion1());
     }
 
-    @GetMapping("/v2/trends")
+    @GetMapping("/v3/trends")
     public ResponseEntity<List<TopKeywordDto>> retrieveTopKeywordVersion2() {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -37,7 +37,7 @@ public class TrendController {
                 .build();
     }
 
-    @PostMapping("/v2/trends")
+    @PostMapping("/v3/trends")
     public ResponseEntity<Void> modifyTopKeywordVersion2() {
         trendService.modifyTopKeywordVersion2();
         return ResponseEntity

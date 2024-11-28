@@ -50,6 +50,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 url.startsWith("/api/trends") || //인기 검색어
                 url.startsWith("/api/v1/trends") || //인기 검색어
                 url.startsWith("/api/v2/trends") || //인기 검색어
+                url.startsWith("/api/v3/trends") || //인기 검색어
                 (url.matches("/api/products/\\d+/reviews") && "GET".equals(method))//리뷰보기
         ) {
             chain.doFilter(request, response);
