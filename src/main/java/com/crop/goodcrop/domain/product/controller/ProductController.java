@@ -49,4 +49,26 @@ public class ProductController {
                 .body(productService.searchProducts(keyword, minPrice, isTrend, page, size));
     }
 
+    @GetMapping("/v2/products")
+    public ResponseEntity<PageResponseDto<ProductResponseDto>> retrieveProducts(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0", required = false) int minPrice,
+            @RequestParam(defaultValue = "false") boolean isTrend,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        // keyword 가 공백 또는 빈 문자열인 경우 예외 처리
+        if (keyword.trim().isEmpty()) {
+            throw new ResponseException(ErrorCode.BAD_INPUT, "키워드가 공백이거나 비어있을 수 없습니다.");
+        }
+
+        // 인기 검색어에 있는 키워드 여부
+        boolean isTopKeyword = productService.isTopKeyword(keyword);
+
+        PageResponseDto<ProductResponseDto> responses = productService.searchWithCache(keyword, isTopKeyword, minPrice, isTrend, page, size);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responses);
+    }
 }
