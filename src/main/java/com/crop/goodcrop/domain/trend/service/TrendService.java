@@ -1,17 +1,13 @@
 package com.crop.goodcrop.domain.trend.service;
 
 import com.crop.goodcrop.config.CacheConfig;
-import com.crop.goodcrop.config.H2Config;
 import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
-import com.crop.goodcrop.domain.trend.entity.h2.H2SearchHistory;
-import com.crop.goodcrop.domain.trend.entity.mysql.SearchHistory;
 import com.crop.goodcrop.domain.trend.entity.mysql.TopKeyword;
 import com.crop.goodcrop.domain.trend.repository.h2.H2SearchHistoryRepository;
 import com.crop.goodcrop.domain.trend.repository.mysql.SearchHistoryRepository;
 import com.crop.goodcrop.domain.trend.repository.mysql.TopKeywordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,19 +83,19 @@ public class TrendService {
         }
     }
 
-    @Scheduled(fixedDelay = H2Config.MIGRATION_DURATION)
-    public void migration() {
-        List<H2SearchHistory> h2SearchHistories = h2SearchHistoryRepository.findAll();
-        List<SearchHistory> searchHistories = h2SearchHistories.stream()
-                .map(item -> {
-                    return SearchHistory.builder()
-                            .id(item.getId())
-                            .keyword(item.getKeyword())
-                            .memberId(item.getMemberId())
-                            .createdAt(item.getCreatedAt())
-                            .build();
-                }).toList();
-        searchHistoryRepository.saveAll(searchHistories);
-        h2SearchHistoryRepository.deleteAll();
-    }
+//    @Scheduled(fixedDelay = H2Config.MIGRATION_DURATION)
+//    public void migration() {
+//        List<H2SearchHistory> h2SearchHistories = h2SearchHistoryRepository.findAll();
+//        List<SearchHistory> searchHistories = h2SearchHistories.stream()
+//                .map(item -> {
+//                    return SearchHistory.builder()
+//                            .id(item.getId())
+//                            .keyword(item.getKeyword())
+//                            .memberId(item.getMemberId())
+//                            .createdAt(item.getCreatedAt())
+//                            .build();
+//                }).toList();
+//        searchHistoryRepository.saveAll(searchHistories);
+//        h2SearchHistoryRepository.deleteAll();
+//    }
 }

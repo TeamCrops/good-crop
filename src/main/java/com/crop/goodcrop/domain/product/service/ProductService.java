@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,6 @@ public class ProductService {
                 avgScore);
     }
 
-    @Transactional
     public PageResponseDto<ProductResponseDto> searchProducts(String keyword, int minPrice, boolean isTrend, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Product> products = productRepository.searchProductsWithFilters(keyword, minPrice, isTrend, pageable)
@@ -77,7 +77,7 @@ public class ProductService {
         // === ver1 직접 SearchHistory 테이블에 Insert ===
         // createSearchHistory(null, keyword);
         // === ver2 in-memory에 올린다. ===
-        putCacheSearchHistory(null, keyword);
+        putCacheSearchHistory(1, keyword);
         // === ver3 버려진 H2 ===
         // createH2SearchHistory(null, keyword);
         // =============================================
@@ -87,10 +87,12 @@ public class ProductService {
         );
     }
 
-    public void putCacheSearchHistory(Long memberId, String keyword) {
+    public void putCacheSearchHistory(long memberId, String keyword) {
         Cache cache = cacheManager.getCache(CacheConfig.SEARCH_HISTORY);
         if(cache!=null){
-            cache.put(memberId, keyword);
+            List<String> keywords = cache.get(memberId, ArrayList::new);
+            keywords.add(keyword);
+            cache.put(memberId, keywords);
         }
     }
 
