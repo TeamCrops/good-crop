@@ -84,8 +84,8 @@ public class ProductService {
 
 
     //상품검색 캐시 적용
-    @Cacheable(value = "searchProductsCache", key = "#keyword", condition = "@productService.isTopKeyword(#keyword)")
-    public PageResponseDto<ProductResponseDto> searchProductsWithCache(String keyword, int minPrice, boolean isTrend, int page, int size) {
+    @Cacheable(value = "searchProductsCache", key = "#keyword + '_' + #minPrice + '_' + #isTrend + '_' + #page + '_' + #size", condition = "#existWord")
+    public PageResponseDto<ProductResponseDto> searchProductsWithCache(String keyword, int minPrice, boolean isTrend, boolean existWord, int page, int size) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
 
@@ -123,7 +123,10 @@ public class ProductService {
 
     // 사용자 검색어가 인기 검색어와 일치하는지 확인 메서드
     public boolean isTopKeyword(String keyword) {
-        return topKeywordRepository.existsByKeyword(keyword);
+        boolean exists = topKeywordRepository.existsByKeyword(keyword);
+        log.info("사용자 입력 검색어 '{}' 인기검색어 일치 여부: {}", keyword, exists);
+        return exists;
+
     }
 
 }

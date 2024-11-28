@@ -63,9 +63,14 @@ public class ProductController {
         if (keyword.trim().isEmpty()) {
             throw new ResponseException(ErrorCode.BAD_INPUT, "키워드가 공백이거나 비어있을 수 없습니다.");
         }
+        
+        // 인기검색어 해당 하는지 확인
+        boolean existWord = productService.isTopKeyword(keyword);
+
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(productService.searchProductsWithCache(keyword, minPrice, isTrend, page, size));
+                .body(productService.searchProductsWithCache(keyword, minPrice, isTrend, existWord, page, size));
     }
 
 }
