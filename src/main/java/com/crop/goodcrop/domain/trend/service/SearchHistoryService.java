@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCache;
+import org.springframework.data.redis.cache.RedisCache;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,16 +36,24 @@ public class SearchHistoryService {
     // @Scheduled(fixedRate = 1000 * 30) // 30초
     @Transactional
     public void writeBack(){
-        // Caffeine 캐시에서 캐시를 가져오기
+        // 레디스 캐시에서 캐시를 가져오기
         Cache cache = cacheManager.getCache(RedisConfig.SEARCH_HISTORY);
         if (cache != null) {
-            // CaffeineCache에서 asMap() 메서드로 데이터를 Map 형태로 가져오기
-            Map<Object, Object> cacheMap = cache.getNativeCache().asMap();
-
-            // Map 순회
+            // Map 형태로 가져오기
+            Map<Object, Object> cacheMap = getAllCacheData();
             List<SearchHistory> histories = new ArrayList<>();
+            // Map 순회
             for (Map.Entry<Object, Object> entry : cacheMap.entrySet()) {
-                histories.add((SearchHistory)entry.getValue());
+                Long memberId = Long.valueOf(entry.getKey().toString());
+                List<String> keywords = (List<String>) entry.getValue();
+//                histories.add((SearchHistory)entry.getValue());
+
+                for(String keyword : keywords){
+                    histories.add(SearchHistory.builder()
+                            .memberId(memberId)
+                            .keyword(keyword)
+                            .build());
+                }
 
                 // DB에 저장
                 searchHistoryRepository.saveAll(histories);
@@ -61,10 +70,8 @@ public class SearchHistoryService {
             return new HashMap<>(); // 캐시가 없을 경우 빈 Map 반환
         }
         // Native Cache를 통해 데이터 접근
-        if (cache.getNativeCache() instanceof com.github.benmanes.caffeine.cache.Cache) {
-            com.github.benmanes.caffeine.cache.Cache<Object, Object> nativeCache =
-                    (com.github.benmanes.caffeine.cache.Cache<Object, Object>) cache.getNativeCache();
-            return nativeCache.asMap();
+        if (cache.getNativeCache() instanceof RedisCache redisCache) {
+            return (Map<Object, Object>) redisCache.getNativeCache();
         }
         return new HashMap<>(); // 캐시 유형이 Caffeine이 아닐 경우 빈 Map 반환
     }

@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -85,21 +86,43 @@ public class ProductService {
 
     public void putCacheSearchHistory(long memberId, String keyword) {
         Cache cache = cacheManager.getCache(RedisConfig.SEARCH_HISTORY);
-        if (cache == null)
+        if(cache == null){
             return;
-
-        if (cache.getNativeCache() instanceof com.github.benmanes.caffeine.cache.Cache caffineCache) {
-            if (checkAbusing(keyword, caffineCache.asMap()))
-                return;
-
-            String key = memberId + "_" + LocalDateTime.now();
-            SearchHistory searchHistory = SearchHistory.builder()
-                    .memberId(memberId)
-                    .keyword(keyword)
-                    .createdAt(LocalDateTime.now())
-                    .build();
-            cache.put(key, searchHistory);
         }
+        List<SearchHistory> existingHistories = cache.get(memberId, List.class);
+        // 새로운 검색 기록 생성
+        SearchHistory searchHistory = SearchHistory.builder()
+                .memberId(memberId)
+                .keyword(keyword)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        if(existingHistories==null){
+            return;
+        }
+
+        existingHistories.add(searchHistory);
+
+        // Redis 캐시에 검색 기록 업데이트
+        cache.put(memberId, existingHistories);
+//        if (cache == null){
+//
+//            return;//put하는 로직 추가//캐시 매니저로
+//        }
+//
+//
+//        if (cache.getNativeCache() instanceof com.github.benmanes.caffeine.cache.Cache caffineCache) {
+//            if (checkAbusing(keyword, caffineCache.asMap()))
+//                return;
+//
+//            String key = memberId + "_" + LocalDateTime.now();
+//            SearchHistory searchHistory = SearchHistory.builder()
+//                    .memberId(memberId)
+//                    .keyword(keyword)
+//                    .createdAt(LocalDateTime.now())
+//                    .build();
+//            cache.put(key, searchHistory);
+//        }
     }
 
     private boolean checkAbusing(String keyword, ConcurrentMap<Long, SearchHistory> searchHistories) {
