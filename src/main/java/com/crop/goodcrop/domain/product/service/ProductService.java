@@ -22,9 +22,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +52,14 @@ public class ProductService {
     }
 
     public PageResponseDto<ProductResponseDto> searchProducts(String keyword, int minPrice, boolean isTrend, int page, int size) {
+        // === ver1 직접 SearchHistory 테이블에 Insert ===
+        // createSearchHistory(null, keyword);
+        // === ver2 in-memory에 올린다. ===
+        putCacheSearchHistory(1, keyword);
+        // === ver3 버려진 H2 ===
+        // createH2SearchHistory(null, keyword);
+        // =============================================
+
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Product> products = productRepository.searchProductsWithFilters(keyword, minPrice, isTrend, pageable)
                 .orElseThrow(() -> new ResponseException(ErrorCode.PRODUCT_SEARCH_NOT_FOUND));
@@ -74,14 +85,6 @@ public class ProductService {
                     );
                 }).toList();
 
-        // === ver1 직접 SearchHistory 테이블에 Insert ===
-        // createSearchHistory(null, keyword);
-        // === ver2 in-memory에 올린다. ===
-        putCacheSearchHistory(1, keyword);
-        // === ver3 버려진 H2 ===
-        // createH2SearchHistory(null, keyword);
-        // =============================================
-
         return PageResponseDto.of(
                 respDtos, pageable, products.getTotalPages()
         );
@@ -89,11 +92,31 @@ public class ProductService {
 
     public void putCacheSearchHistory(long memberId, String keyword) {
         Cache cache = cacheManager.getCache(CacheConfig.SEARCH_HISTORY);
-        if(cache!=null){
-            List<String> keywords = cache.get(memberId, ArrayList::new);
-            keywords.add(keyword);
-            cache.put(memberId, keywords);
+        if(cache == null)
+            return;
+
+        if (cache.getNativeCache() instanceof com.github.benmanes.caffeine.cache.Cache caffineCache) {
+            if(checkAbusing(caffineCache.asMap()))
+                return;
+
+            String key = memberId + "_" + LocalDateTime.now();
+            SearchHistory searchHistory = SearchHistory.builder()
+                    .memberId(memberId)
+                    .keyword(keyword)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            cache.put(key, searchHistory);
         }
+    }
+
+    private boolean checkAbusing(ConcurrentMap<Long, SearchHistory> searchHistories) {
+        LocalDateTime checkDate = LocalDateTime.now().minusMinutes(1);
+        for(Map.Entry<Long, SearchHistory> entry : searchHistories.entrySet()) {
+            SearchHistory searchHistory = entry.getValue();
+            if(checkDate.isBefore(searchHistory.getCreatedAt()))
+                return true;
+        }
+        return false;
     }
 
     private void createSearchHistory(Long memberId, String keyword) {

@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,19 +31,12 @@ public class WriteBackService {
             Map<Object, Object> cacheMap = cache.getNativeCache().asMap();
 
             // Map 순회
+            List<SearchHistory> histories = new ArrayList<>();
             for (Map.Entry<Object, Object> entry : cacheMap.entrySet()) {
-                Long memberId = (Long) entry.getKey();
-                List<String> keywords = (List<String>) entry.getValue();
+                histories.add((SearchHistory)entry.getValue());
 
                 // DB에 저장
-                for (String keyword : keywords) {
-                    searchHistoryRepository.save(
-                            SearchHistory.builder()
-                                    .memberId(memberId)
-                                    .keyword(keyword)
-                                    .build()
-                    );
-                }
+                searchHistoryRepository.saveAll(histories);
             }
 
             // 캐시 초기화
