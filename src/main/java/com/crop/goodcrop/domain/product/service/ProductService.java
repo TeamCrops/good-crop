@@ -6,9 +6,12 @@ import com.crop.goodcrop.domain.product.dto.response.ProductResponseDto;
 import com.crop.goodcrop.domain.product.entity.Product;
 import com.crop.goodcrop.domain.product.repository.ProductRepository;
 import com.crop.goodcrop.domain.review.repository.ReviewRepository;
+import com.crop.goodcrop.domain.trend.repository.TopKeywordRepository;
 import com.crop.goodcrop.exception.ErrorCode;
 import com.crop.goodcrop.exception.ResponseException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,12 +22,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
+    private final TopKeywordRepository topKeywordRepository;
 
     public ProductResponseDto retrieveProduct(Long productId) {
         Product product = productRepository.findById(productId)
@@ -75,5 +80,25 @@ public class ProductService {
         return PageResponseDto.of(
                 respDtos, pageable, products.getTotalPages()
         );
+    }
+
+    @Cacheable(
+            cacheNames = "searchCache",
+            key = "#keyword + ':' + #minPrice + ':' + #isTrend + ':' + #page + ':' + #size",
+            condition = "#isTopKeyword"
+    )
+    public PageResponseDto<ProductResponseDto> searchWithCache(
+            String keyword,
+            boolean isTopKeyword,
+            Integer minPrice,
+            boolean isTrend,
+            int page,
+            int size
+    ) {
+        return searchProducts(keyword, minPrice, isTrend, page, size);
+    }
+
+    public boolean isTopKeyword(String keyword) {
+        return topKeywordRepository.existsByKeyword(keyword);
     }
 }
