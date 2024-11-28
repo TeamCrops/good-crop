@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,9 +36,14 @@ public class TopKeywordService {
     }
 
     @Transactional
+    @Scheduled(fixedRate = 120000) // 2시간
+    // @Scheduled(fixedRate = 1000 * 30) // 30초
     public void refreshTopKeyword() {
         List<TopKeywordDto> topKeywords = searchHistoryRepository.findTopFiveOrderBySearchCount();
         List<TopKeyword> newTopKeywords = convertDtoToEntity(topKeywords);
+        if(newTopKeywords.isEmpty())
+            return;
+
         if(newTopKeywords.size() < TOP_KEYWORD_COUNT)
             addTopKeyword(newTopKeywords);
 

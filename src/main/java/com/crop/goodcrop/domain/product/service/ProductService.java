@@ -89,7 +89,7 @@ public class ProductService {
             return;
 
         if (cache.getNativeCache() instanceof com.github.benmanes.caffeine.cache.Cache caffineCache) {
-            if (checkAbusing(caffineCache.asMap()))
+            if (checkAbusing(keyword, caffineCache.asMap()))
                 return;
 
             String key = memberId + "_" + LocalDateTime.now();
@@ -102,11 +102,12 @@ public class ProductService {
         }
     }
 
-    private boolean checkAbusing(ConcurrentMap<Long, SearchHistory> searchHistories) {
+    private boolean checkAbusing(String keyword, ConcurrentMap<Long, SearchHistory> searchHistories) {
         LocalDateTime checkDate = LocalDateTime.now().minusMinutes(1);
         for (Map.Entry<Long, SearchHistory> entry : searchHistories.entrySet()) {
             SearchHistory searchHistory = entry.getValue();
-            if (checkDate.isBefore(searchHistory.getCreatedAt()))
+            if (searchHistory.getKeyword().equals(keyword) &&
+                checkDate.isBefore(searchHistory.getCreatedAt()))
                 return true;
         }
         return false;

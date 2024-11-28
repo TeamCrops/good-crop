@@ -32,6 +32,7 @@ public class SearchHistoryService {
     }
 
     @Scheduled(fixedRate = 300000)
+    // @Scheduled(fixedRate = 1000 * 30) // 30초
     @Transactional
     public void writeBack(){
         // Caffeine 캐시에서 캐시를 가져오기
