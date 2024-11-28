@@ -15,11 +15,18 @@ import java.util.List;
 public class TrendController {
     private final TrendService trendService;
 
-    @GetMapping("/trends")
-    public ResponseEntity<List<TopKeywordDto>> retrieveTopKeyword() {
+    @GetMapping("/v1/trends")
+    public ResponseEntity<List<TopKeywordDto>> retrieveTopKeywordVersion1() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(trendService.retrieveTopKeyword());
+                .body(trendService.retrieveTopKeywordVersion1());
+    }
+
+    @GetMapping("/v3/trends")
+    public ResponseEntity<List<TopKeywordDto>> retrieveTopKeywordVersion2() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(trendService.retrieveTopKeywordVersion2());
     }
 
     @PostMapping("/v1/trends")
@@ -30,7 +37,7 @@ public class TrendController {
                 .build();
     }
 
-    @PostMapping("/v2/trends")
+    @PostMapping("/v3/trends")
     public ResponseEntity<Void> modifyTopKeywordVersion2() {
         trendService.modifyTopKeywordVersion2();
         return ResponseEntity

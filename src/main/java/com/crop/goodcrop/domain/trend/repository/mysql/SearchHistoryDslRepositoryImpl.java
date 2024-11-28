@@ -1,8 +1,8 @@
-package com.crop.goodcrop.domain.trend.repository;
+package com.crop.goodcrop.domain.trend.repository.mysql;
 
 import com.crop.goodcrop.domain.trend.dto.QTopKeywordDto;
 import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
-import com.crop.goodcrop.domain.trend.entity.QSearchHistory;
+import com.crop.goodcrop.domain.trend.entity.mysql.QSearchHistory;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
@@ -32,7 +32,7 @@ public class SearchHistoryDslRepositoryImpl implements SearchHistoryDslRepositor
                 .groupBy(searchHistory.keyword)
                 .orderBy(aliasSearchCount.desc(),
                         searchHistory.createdAt.max().desc())
-                .limit(10)
+                .limit(5)
                 .fetch();
     }
 

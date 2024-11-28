@@ -49,6 +49,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 url.startsWith("/api/v1/products") || //상품검색
                 url.startsWith("/api/trends") || //인기 검색어
                 url.startsWith("/api/v1/trends") || //인기 검색어
+                url.startsWith("/api/v2/trends") || //인기 검색어
                 url.startsWith("/api/v3/trends") || //인기 검색어
                 (url.matches("/api/products/\\d+/reviews") && "GET".equals(method))//리뷰보기
         ) {
@@ -62,7 +63,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 토큰 없음
         if (bearerJwt == null) {
-            sendErrorResponse(httpResponse, ErrorCode.TOKEN_MISSING,request);
+            sendErrorResponse(httpResponse, ErrorCode.TOKEN_MISSING, request);
             return;
         }
 
@@ -71,7 +72,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 유효하지 않은 토큰
         if (!jwtUtil.verifyAccessToken(jwt)) {
-            sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_SIGNATURE,request);
+            sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_SIGNATURE, request);
             return;
         }
 
@@ -83,7 +84,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             //잘못된 토큰
             if (claims == null) {
-                sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_FORMAT,request);
+                sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_FORMAT, request);
                 return;
             }
 
@@ -92,16 +93,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         } catch (SecurityException | MalformedJwtException e) {
             log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.", e);
-            sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_SIGNATURE,request);
+            sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_SIGNATURE, request);
         } catch (ExpiredJwtException e) {
             log.error("Expired JWT token, 만료된 JWT token 입니다.", e);
-            sendErrorResponse(httpResponse, ErrorCode.EXPIRED_TOKEN,request);
+            sendErrorResponse(httpResponse, ErrorCode.EXPIRED_TOKEN, request);
         } catch (UnsupportedJwtException e) {
             log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.", e);
-            sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_TYPE,request);
+            sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_TYPE, request);
         } catch (Exception e) {
             log.error("Internal server error", e);
-            sendErrorResponse(httpResponse, ErrorCode.INTERNAL_SERVER_ERROR,request);
+            sendErrorResponse(httpResponse, ErrorCode.INTERNAL_SERVER_ERROR, request);
         }
     }
 
@@ -129,7 +130,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         response.setCharacterEncoding("UTF-8");
         response.setStatus(errorCode.getHttpStatus().value());
 
-        String json = objectMapper.writeValueAsString(new ErrorResponseDto(errorCode,request.getRequestURI()));
+        String json = objectMapper.writeValueAsString(new ErrorResponseDto(errorCode, request.getRequestURI()));
         response.getWriter().write(json);
     }
 
