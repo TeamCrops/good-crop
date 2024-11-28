@@ -38,7 +38,6 @@ public class ProductController {
             @RequestParam(defaultValue = "10") int size
             ) {
         Long memberId = (userDetails != null) ? userDetails.getUser().getId() : -1;
-        System.out.println("memberId: " + memberId);
 
         // keyword가 공백 또는 빈 문자열인 경우 예외 처리
         if (keyword.trim().isEmpty()) {
@@ -46,7 +45,6 @@ public class ProductController {
         }
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(productService.searchProducts(keyword, minPrice, isTrend, page, size));
+                .body(productService.searchProducts(memberId, keyword, minPrice, isTrend, page, size));
     }
-
 }
