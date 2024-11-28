@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
 
@@ -18,6 +19,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class) // @Mock 사용을 위해 설정합니다.
 public class TrendServiceTest {
+    @Mock
+    RedisTemplate<String, Object> redisTemplate;
+
     @Mock
     TopKeywordRepository topKeywordRepository;
 
@@ -34,7 +38,7 @@ public class TrendServiceTest {
         when(topKeywordRepository.saveAll(anyList())).thenReturn(topKeywords);
 
         // when
-        TopKeywordService service = new TopKeywordService(searchHistoryRepository, topKeywordRepository);
+        TopKeywordService service = new TopKeywordService(redisTemplate, searchHistoryRepository, topKeywordRepository);
         service.refreshTopKeyword();
 
         // then
@@ -51,7 +55,7 @@ public class TrendServiceTest {
         when(topKeywordRepository.findAll()).thenReturn(topKeywords);
 
         // when
-        TopKeywordService service = new TopKeywordService(searchHistoryRepository, topKeywordRepository);
+        TopKeywordService service = new TopKeywordService(redisTemplate, searchHistoryRepository, topKeywordRepository);
         List<TopKeywordDto> results = service.retrieveTopKeywordVersion1();
 
         // then

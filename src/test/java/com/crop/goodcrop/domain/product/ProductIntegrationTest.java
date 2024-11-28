@@ -88,13 +88,14 @@ public class ProductIntegrationTest {
     public void searchSuccessTest1() {
         // given
         String keyword = "Product";
+        Long memberId = 1L;
         int minPrice = 0;
         boolean isTrend = false;
         int page = 1;
         int size = 10;
 
         // when
-        PageResponseDto<ProductResponseDto> result = productService.searchProducts(keyword, minPrice, isTrend, page, size);
+        PageResponseDto<ProductResponseDto> result = productService.searchProducts(memberId, keyword, minPrice, isTrend, page, size);
 
         // then
         assertThat(result.getData().size()).isEqualTo(3);
@@ -107,13 +108,14 @@ public class ProductIntegrationTest {
     public void searchSuccessTest2() {
         // given
         String keyword = "Product";
+        Long memberId = 1L;
         int minPrice = 500;
         boolean isTrend = false;
         int page = 1;
         int size = 10;
 
         // when
-        PageResponseDto<ProductResponseDto> result = productService.searchProducts(keyword, minPrice, isTrend, page, size);
+        PageResponseDto<ProductResponseDto> result = productService.searchProducts(memberId, keyword, minPrice, isTrend, page, size);
 
         // then
         assertThat(result.getData().size()).isEqualTo(2);

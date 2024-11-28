@@ -29,8 +29,6 @@ public class SearchHistoryService {
         redisTemplate.opsForHash().put(RedisConfig.SEARCH_HISTORY, key, searchHistory);
     }
 
-    // @Scheduled(fixedRate = 300000)
-    // @Scheduled(fixedRate = 1000 * 30) // 30초
     @Transactional
     public void writeBack() {
         Map<Object, Object> cacheMap = redisTemplate

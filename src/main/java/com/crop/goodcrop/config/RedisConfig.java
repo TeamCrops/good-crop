@@ -30,13 +30,19 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int port;
 
+    @Value("${spring.data.redis.password}")
+    private String password;
+
+    @Value("${spring.cache.redis.time-to-live}")
+    private Long timeToLive;
+
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         // Redis Standalone 설정
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
         config.setHostName(host); // Redis 서버 호스트
         config.setPort(port); // Redis 서버 포트
-        config.setPassword("Admin123!"); // Redis 비밀번호 (필요한 경우 설정)
+        config.setPassword(password); // Redis 비밀번호 (필요한 경우 설정)
 
         // LettuceConnectionFactory를 사용해 Redis와 연결
         return new LettuceConnectionFactory(config);
@@ -79,7 +85,7 @@ public class RedisConfig {
     // product 캐시 설정
     private RedisCacheConfiguration productCacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofHours(2)) // 2시간 후 만료
+                .entryTtl(Duration.ofMinutes(timeToLive))
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
     }

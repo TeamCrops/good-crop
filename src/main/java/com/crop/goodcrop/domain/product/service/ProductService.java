@@ -50,7 +50,7 @@ public class ProductService {
     }
 
     public PageResponseDto<ProductResponseDto> searchProducts(Long memberId, String keyword, int minPrice, boolean isTrend, int page, int size) {
-        createSearchHistory(null, keyword);
+        createSearchHistory(memberId, keyword);
 
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Product> products = productRepository.searchProductsWithFilters(keyword, minPrice, isTrend, pageable)
@@ -90,7 +90,7 @@ public class ProductService {
 
 
     //상품검색 캐시 적용
-    @Cacheable(value = "searchProductsRedis", key = "#keyword + '_' + #minPrice + '_' + #isTrend + '_' + #page + '_' + #size", condition = "#existWord")
+    @Cacheable(value = RedisConfig.PRODUCT, key = "#keyword + '_' + #minPrice + '_' + #isTrend + '_' + #page + '_' + #size", condition = "#existWord")
     public PageResponseDto<ProductResponseDto> searchProductsWithCache(Long memberId, String keyword, int minPrice, boolean isTrend, boolean existWord, int page, int size) {
         putCacheSearchHistory(memberId, keyword);
 
@@ -124,7 +124,6 @@ public class ProductService {
                 respDtos, pageable, products.getTotalPages()
         );
     }
-
 
     // 사용자 검색어가 인기 검색어와 일치하는지 확인 메서드
     public boolean isTopKeyword(String keyword) {

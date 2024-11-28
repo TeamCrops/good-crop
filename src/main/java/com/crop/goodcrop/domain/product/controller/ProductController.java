@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class ProductController {
-
     private final ProductService productService;
 
     @GetMapping("/products/{productId}")
@@ -51,12 +50,14 @@ public class ProductController {
     // 상품검색 캐시
     @GetMapping("v2/products")
     public ResponseEntity<PageResponseDto<ProductResponseDto>> searchProductsWithCache(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0", required = false) int minPrice,
             @RequestParam(defaultValue = "false") boolean isTrend,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        Long memberId = (userDetails != null) ? userDetails.getUser().getId() : -1;
 
         // keyword가 공백 또는 빈 문자열인 경우 예외 처리
         if (keyword.trim().isEmpty()) {
@@ -66,9 +67,8 @@ public class ProductController {
         // 인기검색어 해당 하는지 확인
         boolean existWord = productService.isTopKeyword(keyword);
 
-
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(productService.searchProductsWithCache(keyword, minPrice, isTrend, existWord, page, size));
+                .body(productService.searchProductsWithCache(memberId, keyword, minPrice, isTrend, existWord, page, size));
     }
 }
