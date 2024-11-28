@@ -28,7 +28,7 @@ public class TopKeywordService {
         return topKeywords.stream().map(TopKeywordDto::from).toList();
     }
 
-    @Cacheable(value = RedisConfig.TOP_KEYWORD, key = "#memberId + '_' + #createdAt")
+    @Cacheable(value = RedisConfig.TOP_KEYWORD)
     public List<TopKeywordDto> retrieveTopKeywordVersion2() {
         List<TopKeyword> topKeywords = topKeywordRepository.findAll();
         return topKeywords.stream().map(TopKeywordDto::from).toList();
