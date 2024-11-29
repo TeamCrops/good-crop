@@ -15,10 +15,10 @@ public class ScheduledTasks {
     private final TopKeywordService topKeywordService;
 
     // 5분마다 캐시 데이터를 DB에 write-back하고, 캐시를 비웁니다.
-    @Scheduled(fixedRate = 5 * 60 * 1000)
+    // @Scheduled(fixedRate = 5 * 60 * 1000)
+    @Scheduled(fixedRate = 120 * 60 * 1000)
     public void writeBackAndClearCache() {
         searchHistoryService.writeBack();
-        searchHistoryService.clearCache();
     }
 
     // 2시간마다 인기 검색어를 갱신합니다.
