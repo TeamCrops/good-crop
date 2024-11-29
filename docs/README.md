@@ -1,10 +1,46 @@
-### 🖥️와이어 프레임
+# 농산물 정보 전달 어플리케이션
+
+## ✨ 프로젝트 목표
+### Cache 를 이용한 성능 개선 <br>
+<br>
+
+## 🔎 Cache 를 선택한 이유
+### 저희 서비스의 주 기능은 사용자에게 정보 전달입니다.
+그러다 보니 **사용자 입장에서** 어떻게 하면 **더 빠르게** **정보를 획득**할 수 있을까 고민하였습니다.
+그 결과 **정보 획득 속도**를 높이기 위해 **검색 성능을 개선**하는 것이 핵심이라고 판단했습니다.
+
+사용자가 많아지면 검색량이 자연스럽게 증가할 것이며, **인기 검색어**는 일반 검색어보다 **자주 검색될 가능성이 높다**고 보습니다.
+따라서 **인기 검색어를 캐싱**하면 **조회 결과를 보다 빠르게 전달**할 수 있을 것 입니다.
+
+이렇게 검색 성능이 개선되면, 사용자들이 사이트에서 정보를 찾는 시간이 단축되고 이는 **서버에 대한 부담을 줄여줄 것**입니다.
+결과적으로 시스템 전체의 성능 또한 개선될 것으로 기대하고 있습니다.
+
+<br>
+
+## 🪄 Tools
+
+### 🖥 language & Server
+
+<img src="https://img.shields.io/badge/intellij idea-207BEA?style=for-the-badge&logo=intellij%20idea&logoColor=white">
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"> 
+<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> 
+
+### 👏 Cowork Tools
+
+<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> 
+<img src="https://img.shields.io/badge/notion-000000?style=or-the-badge&logo=notion&logoColor=white"/> <img src="https://img.shields.io/badge/Slack-FE5196?style=or-the-badge&logo=slack&logoColor=white"/>
+<br>
+<hr/>
+
+
+## 🖥️ 와이어 프레임
 <img src="images/WireFrame.png"/>
 
-### 📋ERD
+## 📋 ERD
 <img src="images/ERD.png"/>
 
-### 📑API 명세서
+## 📑 API 명세서
 <details><summary><b>API 명세서(펼치기/접기)</b></summary>
 
 <table>
@@ -330,7 +366,7 @@
 </table>
 </details>
 
-### 🗂️프로젝트 구조
+## 🗂️ 프로젝트 구조
 <details><summary>프로젝트 구조(펼치기/접기)</summary>
 
 ```bash
