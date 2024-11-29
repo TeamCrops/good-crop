@@ -1,5 +1,6 @@
 package com.crop.goodcrop.domain.trend.controller;
 
+import com.crop.goodcrop.domain.trend.dto.TopKeywordCacheDto;
 import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
 import com.crop.goodcrop.domain.trend.service.TopKeywordService;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +27,22 @@ public class TopKeywordController {
     }
 
     @GetMapping("/v2/trends")
-    public ResponseEntity<List<TopKeywordDto>> retrieveTopKeywordVersion2() {
+    public ResponseEntity<TopKeywordCacheDto> retrieveTopKeywordVersion2() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(topKeywordService.retrieveTopKeywordVersion2());
     }
 
-    @PostMapping("/trends")
+    @PostMapping("/v1/trends")
     public ResponseEntity<Void> refreshTopKeywordVersion1() {
+        topKeywordService.refreshTopKeyword();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
+    }
+
+    @PostMapping("/v2/trends")
+    public ResponseEntity<Void> refreshTopKeywordVersion2() {
         topKeywordService.refreshTopKeyword();
         return ResponseEntity
                 .status(HttpStatus.OK)

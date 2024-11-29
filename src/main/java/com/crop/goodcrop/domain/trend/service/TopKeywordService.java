@@ -1,6 +1,7 @@
 package com.crop.goodcrop.domain.trend.service;
 
 import com.crop.goodcrop.config.RedisConfig;
+import com.crop.goodcrop.domain.trend.dto.TopKeywordCacheDto;
 import com.crop.goodcrop.domain.trend.dto.TopKeywordDto;
 import com.crop.goodcrop.domain.trend.entity.TopKeyword;
 import com.crop.goodcrop.domain.trend.repository.SearchHistoryRepository;
@@ -27,10 +28,13 @@ public class TopKeywordService {
         return topKeywords.stream().map(TopKeywordDto::from).toList();
     }
 
-    @Cacheable(value = RedisConfig.TOP_KEYWORD)
-    public List<TopKeywordDto> retrieveTopKeywordVersion2() {
+    @Cacheable(value = RedisConfig.TOP_KEYWORD, key = "'topKeyword'")
+    public TopKeywordCacheDto retrieveTopKeywordVersion2() {
         List<TopKeyword> topKeywords = topKeywordRepository.findAll();
-        return topKeywords.stream().map(TopKeywordDto::from).toList();
+        return new TopKeywordCacheDto(topKeywords
+                .stream()
+                .map(TopKeywordDto::from)
+                .toList());
     }
 
     @Transactional
