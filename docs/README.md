@@ -1,5 +1,7 @@
 # 농산물 정보 전달 어플리케이션
 
+<img src="images/TEAMCROPS.png"/>
+
 ## ✨ 프로젝트 목표
 ### Cache 를 이용한 성능 개선 <br>
 <br>
